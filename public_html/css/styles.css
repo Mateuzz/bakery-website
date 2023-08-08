@@ -254,6 +254,10 @@ textarea {
     color: var(--yellow-link-hover);
 }
 
+.button-link:hover {
+    scale: 1.1;
+}
+
 .main-nav a {
     line-height: 3em;
     padding: 0 2em;
@@ -313,7 +317,7 @@ textarea {
 /*-------------------  -----------  ----------------------*/
 
 .home-main .ut-wrapper {
-    background-image: url("../images/pattern/LinePattern.png");
+    background-image: url("../images/pattern/padraoHome.png");
 }
 
 .home-main h1 {
@@ -624,7 +628,6 @@ input:-webkit-autofill {
 }
 
 .menu-item .button-link:hover {
-    scale: 1.10;
 }
 
 .menu-item-info {

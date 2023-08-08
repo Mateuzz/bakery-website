@@ -16,24 +16,7 @@
 </head>
 
 <body>
-    <header class="header">
-        <div class="header-span">
-
-        </div>
-        <div class="header-nav-wrapper">
-            <nav class="main-nav ut-wrapper">
-                <ul class="ut-row-nav">
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href="about.html">Sobre</a></li>
-                    <li><a href="menu.html">Menu</a></li>
-                    <li><a href="index.html" class="header-logo"><img src="images/McKayIcon.png" width="200px"></a> </li>
-                    <li><a href="#">Cadastre-se</a></li>
-                    <li><a href="#">Login</a></li>
-                    <li><a href="contact.html">Contato</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <?= require "header.php" ?>
 
     <main class="home-main">
         <div class="ut-wrapper">
@@ -47,9 +30,7 @@
                         <div class="info-card-text">
                             <p>
                             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-                            labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et
-                            ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                            </p>
+                            labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. </p>
                             <p>
                             Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
                             labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et
@@ -124,37 +105,8 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-wrapper">
-            <nav class="footer-group">
-                <ul class="ut-row-nav">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Menu</a></li>
-                    <li><a href="#">Order</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Staff</a></li>
-                </ul>
-            </nav> 
+    <?= require "footer.php" ?>
 
-            <div class="footer-group">
-
-                <address>
-                    <p>
-                    Copyright 2023. East Street TX 14454 - Tel: (33)223130 - Fax: 133210932923.
-                    </p>
-                    <p>
-                    All rights reserved - For questions contact mateus@gmail.com
-                    </p>
-                </address>
-            </div>
-        </div>
-        <div class="footer-span">
-            <div class="footer-icon">
-                <img src="images/McKayIcon.png" alt=""/>
-            </div>
-        </div>
-    </footer>
 </body>
 
 </html>
