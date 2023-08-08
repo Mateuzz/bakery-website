@@ -1,0 +1,27 @@
+# Bakery
+
+Main
+about
+Menu
+Order
+Contact
+Staff
+
+
+Cor e tipografia
+    background amarelo
+    cor marrom
+
+    background marrom
+    cor amarelo
+
+    span verde
+
+imagens
+    paes
+    cartao dobrado
+    listrado vertical amarelo acinza + escuro
+
+Fontes
+    uma cursiva (headings + links)
+    uma normal (restante)

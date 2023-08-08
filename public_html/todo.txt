@@ -1,0 +1,10 @@
+criar conta
+login
+    login como admin
+carrinho
+
+admin funções
+    adicionar item menu
+    Adicionar nova categoria
+    estoque
+    blog

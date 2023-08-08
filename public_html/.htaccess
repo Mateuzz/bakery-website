@@ -1,0 +1,12 @@
+Require all granted
+Options Indexes FollowSymLinks
+RewriteOptions Inherit
+
+RewriteEngine on
+
+# # Redirect all requests that doesn't exists to index.php
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+RewriteRule ^.*$ index.php [NE,QSA]
+
+php_value include_path ".:../src/"
+
