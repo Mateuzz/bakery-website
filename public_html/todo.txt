@@ -32,7 +32,7 @@ carrinho
 
 
 database
-    usuarios
+
         id
         nome completo
         senha hashed

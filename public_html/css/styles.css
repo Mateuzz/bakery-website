@@ -709,8 +709,6 @@ input:-webkit-autofill {
     .menu-main {
         display: flex;
     }
-
-
 }
 
 @media screen and (min-width: 1000px) {
