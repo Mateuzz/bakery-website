@@ -29,23 +29,23 @@
 
 @font-face {
     font-family: "Campagnon";
-    src: url("../fonts/Compagnon/compagnon-medium-webfont.woff2") format("woff2");
+    src: url("/fonts/Compagnon/compagnon-medium-webfont.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: "KingThings";
-    src: url("../fonts/KingThings/kingthings_foundation-webfont.woff2") format("woff2"),
-        url("../fonts/KingThings/kingthings_foundation-webfont.woff") format("woff"),
-        url("../fonts/KingThings/Kingthings_Foundation.ttf") format("ttf");
+    src: url("/fonts/KingThings/kingthings_foundation-webfont.woff2") format("woff2"),
+        url("/fonts/KingThings/kingthings_foundation-webfont.woff") format("woff"),
+        url("/fonts/KingThings/Kingthings_Foundation.ttf") format("ttf");
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: "ShanRegular";
-    src: url("../fonts/Shangrilian/ShanRegular.woff") format("woff");
+    src: url("/fonts/Shangrilian/ShanRegular.woff") format("woff");
     font-weight: normal;
     font-style: normal;
 }
@@ -66,7 +66,7 @@
 body {
     font-family: "Ubuntu Regular, Serif";
     font-size: calc(0.7em + 0.3vw);
-    background: url("../images/pattern.webp") center / 30em;
+    background: url("/images/pattern.webp") center / 30em;
     color: var(--brown-default);
 }
 
@@ -77,8 +77,14 @@ a {
     transition: all 0.1s ease-in-out;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 button {
+    border: 0;
     transition: all 0.1s ease-in-out;
+    cursor: pointer;
 }
 
 textarea,
@@ -163,7 +169,7 @@ textarea {
 
 
 .pretty-card-light-box {
-    background-image: url("../images/icons/LightCard.png");
+    background-image: url("/images/icons/LightCard.png");
     height: 100%;
     color: var(--brown-default);
 }
@@ -178,7 +184,7 @@ textarea {
     left: 0;
     bottom: 10%;
     height: 40%;
-    background: url("../images/icons/BrownCard.png") no-repeat center / contain;
+    background: url("/images/icons/BrownCard.png") no-repeat center / contain;
 }
 
 .pretty-card-image a {
@@ -192,8 +198,9 @@ textarea {
 
 .button-link {
     box-shadow: var(--yellow-default) 0 0 3px 0.4px;
-    cursor: pointer;
+    font-family: "KingThings";
     background-color: var(--brown-default);
+    background: radial-gradient(var(--brown-default) 40%, var(--brown-darker));
     color: var(--yellow-default);
     border-radius: 0.2em;
     padding: 0.7em 1em;
@@ -206,6 +213,37 @@ textarea {
     padding: 4em 10%;
 }
 
+
+.form-card {
+    border-radius: 1em;
+    padding: 2em;
+    max-width: 35em;
+    background: linear-gradient(225deg, var(--brown-default) 40%, var(--brown-darker));
+    color: var(--yellow-default)
+}
+
+.form-card :is(div, label) {
+    margin-bottom: 1em;
+}
+
+.form-card h1 {
+    text-align: center;
+    margin-bottom: 0.5em;
+    border-radius: 0.25em;
+}
+
+.form-card :is(input, textarea) {
+    color: var(--brown-default);
+    display: inline-block;
+    border: 1px solid var(--yellow-default);
+    background-color: var(--yellow-input);
+    overflow: auto;
+}
+
+.form-card input:focus,
+.form-card textarea:focus {
+    background-color: var(--yellow-input-focus);
+}
 
 /*-------------------  -----------  ----------------------*/
    /*==================* Pages *====================*/
@@ -317,7 +355,7 @@ textarea {
 /*-------------------  -----------  ----------------------*/
 
 .home-main .ut-wrapper {
-    background-image: url("../images/pattern/padraoHome.png");
+    background-image: url("/images/pattern/padraoHome.png");
 }
 
 .home-main h1 {
@@ -433,60 +471,42 @@ textarea {
    /*==================* Contact Page *====================*/
 /*-------------------  -----------  ----------------------*/
 
-.contact-main {
+.main-card-page {
     padding-top: 5em;
 }
 
-.contact-form {
-    border: 2px solid var(--brown-default);
-    border-radius: 1em;
-    padding: 2em;
-    max-width: 35em;
-    margin: 1em auto 4em auto;
-    background-color: var(--brown-darker);
-    color: var(--yellow-default)
+.basic-form :is(label, textarea, input) {
+    width: 100%;
+    border-radius: 0.2em;
+    position: relative;
 }
 
-.contact-form :is(div, label) {
-    margin-bottom: 1em;
+.basic-form {
+    margin: 0em auto 3em auto;
+}
+
+.basic-form label {
+    display: block;
+}
+
+.basic-form :is(input, textarea) {
+    padding: 0.5em;
+}
+
+.basic-form input:disabled {
+    background-color: transparent;
+    color: var(--yellow-default);
+    border: 0;
+    text-indent: 0;
+    padding: 0;
 }
 
 .contact-link {
     text-align: right;
 }
 
-.contact-form h1 {
-    text-align: center;
-    margin-bottom: 0.5em;
-    border-radius: 0.25em;
-}
-
-.contact-form :is(label, textarea, input) {
-    width: 100%;
-    border-radius: 0.2em;
-    position: relative;
-}
-
-.contact-form label {
-    display: block;
-}
-
-.contact-form :is(input, textarea) {
-    color: var(--brown-default);
-    display: inline-block;
-    padding: 0.5em;
-    border: 1px solid var(--yellow-default);
-    background-color: var(--yellow-input);
-    overflow: auto;
-}
-
 input:-webkit-autofill {
     -webkit-box-shadow: inset var(--yellow-input) 0 0 0 3em;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    background-color: var(--yellow-input-focus);
 }
 
 @keyframes input-invalid {
@@ -504,12 +524,12 @@ input:-webkit-autofill {
     }
 }
 
-.contact-form *:invalid {
+.basic-form *:invalid {
     box-shadow: inset var(--red-invalid-input) 0px 0px 3px 0px;
     animation: input-invalid 1.0s linear infinite; 
 }
 
-.contact-form label:has(+ *:required)::after {
+.basic-form label:has(+ *:required)::after {
     content: "Required";
     background-color: var(--brown-lighter);
     color: var(--yellow-default);
@@ -519,30 +539,51 @@ input:-webkit-autofill {
     right: 0;
 }
 
-.contact-form span {
+.basic-form span {
     position: relative;
     left: 0.3em;
     font-size: 1.7em;
 }
 
-.contact-form *:invalid + span::after {
+.basic-form *:invalid + span::after {
     content: "x";
     color: var(--red-invalid-symbol);
     position: absolute;
 }
 
-.contact-form *:valid + span::after {
+.basic-form *:valid + span::after {
     content: "✓";
     color: green;
     position: absolute;
 }
 
-.contact-form .button-link {
+.basic-form .button-link {
     border: 0;
     font-size: 1.5em;
     width: 100%;
 }
 
+/*-------------------  -----------  ----------------------*/
+   /*==================* Login *====================*/
+/*-------------------  -----------  ----------------------*/
+
+.login-error {
+    color: var(--red-invalid-input);
+    font-size: 1.1em;
+}
+
+.form-message {
+    font-size: 1.2em;
+}
+
+/*-------------------  -----------  ----------------------*/
+   /*==================* Logged  *====================*/
+/*-------------------  -----------  ----------------------*/
+
+
+.logged-form button {
+    margin: 0.5em 0;
+}
 
 
 /*-------------------  -----------  ----------------------*/
@@ -583,7 +624,6 @@ input:-webkit-autofill {
 #hide-menu-type-list {
     background-color: var(--brown-lighter);
     border: 1px solid var(--brown-darker);
-    cursor: pointer;
     width: 2.2em;
     height: 1.4em;
 }
@@ -619,15 +659,9 @@ input:-webkit-autofill {
     box-shadow: inset var(--brown-lighter) 0 0 6px;
 }
 
-.menu-item {
-}
-
 .menu-item img {
     border-radius: 0.5em;
     margin-bottom: 0.4em;
-}
-
-.menu-item .button-link:hover {
 }
 
 .menu-item-info {
@@ -653,7 +687,7 @@ input:-webkit-autofill {
     margin-bottom: 1.0em;
 }
 
-.menu-main .button-link {
+.menu-item .button-link {
     padding: 0.6em 2em;
 }
 
@@ -665,6 +699,89 @@ input:-webkit-autofill {
     background-color: var(--yellow-input);
 }
 
+
+
+/*-------------------  -----------  ----------------------*/
+   /*==================* Cart *====================*/
+/*-------------------  -----------  ----------------------*/
+
+.main-cart {
+    padding: 2em 0;
+}
+
+.cart-items {
+}
+
+.cart-item-card {
+    background-color: var(--brown-default);
+    background: linear-gradient(225deg, var(--brown-default) 60%, var(--brown-darker));
+    color: var(--yellow-default);
+    margin: 0.5em 0;
+    border-radius: 1em;
+    box-shadow: inset black 0 0 8px 1px, var(--brown-darker) 0 0 2px;
+}
+
+.cart-item {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.cart-item-card > div:first-child {
+    position: relative;
+    height: 30px;
+}
+
+.cart-item-card .remove {
+    color: var(--red-invalid-symbol);
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.cart-item > div {
+    margin: -0.5em 1.3em 1.3em 1.3em;
+}
+
+.cart-item-figure {
+    flex: 1 7em;
+    max-width: 50%;
+    border-radius: 1em;
+}
+
+.cart-item-info {
+    flex: 1 70%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.cart-item-description {
+    flex: 1;
+    padding: 0 1em;
+}
+
+.cart-item-info-price {
+    font-weight: bold;
+}
+
+.cart-item-info-qtd {
+    margin-bottom: 1em;
+}
+
+.cart-form-group .cart-form-space > * {
+    width: 48%;
+}
+
+.cart-form-space {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-finish-buy input {
+    padding: 0.4em;
+}
 
 /*-------------------  -----------  ----------------------*/
 /*==================* Modifiers *====================*/
@@ -730,6 +847,20 @@ input:-webkit-autofill {
         font-size: 1em;
     }
 
+    .cart {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        align-items: flex-start;
+        gap: 1em;
+    }
+
+    .cart-items {
+        grid-row: 1 / 2;
+    }
+
+}
+
+@media screen and (max-width: 800px) {
 }
 
 @media screen and (max-width: 1200px) {

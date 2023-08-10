@@ -1,67 +1,15 @@
-connect to database
-    validate
-    check if user exists
-    create account
-    return page account created
-
-conta criada
-login
-sign up
-logado
-
-
-pages
-    carrinho logado
-    carrinho nao logado
-    contra criada
+html
+    carrinho
     conta logada
-        sign out
-    admin page
-        controle estoque
+        
+    admin page 
+        controle estoque.
             adicionar categoria
             adicionar item em categoria
             alterar item
 
-
-
-
-criar conta
-login
-    login como admin
-carrinho
-
-
-database
-
-        id
-        nome completo
-        senha hashed
-        email
-        data nascimento
-        telefone
-    estoque 
-        item id
-        nome
-        quantidade
-        preco unidade
-        imagem menu
-
-    item-pedido
-        pedido
-        item
-        quantidade
-
-    pedidos
-        id
-        usuario id
-        data
-        modo-pagamento
-        valor-total
-        [endereco]
-            cidade
-            bairro
-            cep
-            rua
-            numero
-            complemento
-
+back end
+    session
+        carrinho
+        logado
+        
