@@ -1,15 +1,8 @@
 html
-    carrinho
-    conta logada
-        
     admin page 
         controle estoque.
-            adicionar categoria
-            adicionar item em categoria
-            alterar item
+            adicionar, alterar e remover item
 
-back end
-    session
-        carrinho
-        logado
-        
+products
+
+

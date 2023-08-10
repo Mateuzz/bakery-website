@@ -2,6 +2,15 @@ function $(selector) {
     return document.querySelector(selector)
 }
 
+function $all(selector) {
+    return document.querySelectorAll(selector)
+}
+
+
+/* ************************************/
+/*             Menu Page              */
+/***************************************/
+
 const hideTypeList = $('#hide-menu-type-list')
 
 if (hideTypeList) {
@@ -18,10 +27,14 @@ if (hideTypeList) {
     }
 }
 
+/* ************************************/
+/*             Cart Page              */
+/***************************************/
+
 const cartItemsSection = $('.cart-items')
 
 if (cartItemsSection) {
-    const allCartItems = document.querySelectorAll('.cart-item')
+    const allCartItems = $all('.cart-item')
     const subtotal = $('.cart-finish-subtotal')
     const total = $('.cart-finish-total')
     const installment = $('.cart-finish-installment')
@@ -39,3 +52,41 @@ if (cartItemsSection) {
     total.textContent = subtotal.textContent
     installment.textContent = `Até 12x de R\$${(totalPrice / 12.0).toFixed(2)} sem juros.`
 }
+
+
+/* ************************************/
+/*             Stock Page             */
+/***************************************/
+
+function addConfirmEditButton(product) {
+    
+
+    buttons.append(confirmButton)
+}
+
+const products = $all('.product-stock-card')
+
+products.forEach(value => {
+    const submitActions = value.querySelector('.product-card-submit-actions')
+
+    const editAction = value.querySelector('.product-stock-edit')
+    const cancelAction = value.querySelector('.product-stock-cancel')
+
+    const inputs = value.querySelectorAll('input, select, textarea')
+
+    editAction.onclick = () => {
+        for (const input of inputs)  {
+            input.disabled = false
+            submitActions.setAttribute('data-state', 'enabled')
+        }
+        editAction.setAttribute('data-state', 'disabled')
+    }
+
+    cancelAction.onclick = () => {
+        for (const input of inputs) {
+            input.disabled = true
+            submitActions.setAttribute('data-state', 'disabled')
+        }
+        editAction.setAttribute('data-state', 'enabled')
+    }
+})
