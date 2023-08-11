@@ -1,7 +1,7 @@
 <?php
 
-    ini_set("display_errors", true);
-    error_reporting(E_ALL);
+ini_set("display_errors", true);
+error_reporting(E_ALL);
 
 require 'controllers/controllers.php';
 
@@ -19,6 +19,7 @@ const CONTROLLERS_PATH = [
     "/user/logout" => "logoutPage",
     "/user/signup" => "signupPage",
     "/admin/stock" => "stockControlPage",
+    "/admin/stock/edit" => "stockEditPage",
 ];
 
 

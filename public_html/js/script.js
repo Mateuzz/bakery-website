@@ -6,7 +6,6 @@ function $all(selector) {
     return document.querySelectorAll(selector)
 }
 
-
 /* ************************************/
 /*             Menu Page              */
 /***************************************/
@@ -58,12 +57,6 @@ if (cartItemsSection) {
 /*             Stock Page             */
 /***************************************/
 
-function addConfirmEditButton(product) {
-    
-
-    buttons.append(confirmButton)
-}
-
 const products = $all('.product-stock-card')
 
 products.forEach(value => {
@@ -80,6 +73,14 @@ products.forEach(value => {
             submitActions.setAttribute('data-state', 'enabled')
         }
         editAction.setAttribute('data-state', 'disabled')
+
+        for (const product of products) {
+            if (product != value) {
+                product.setAttribute('data-state', 'disabled');
+            }
+        }
+
+        document.location.href = `#name_${value.getAttribute('data-id')}`
     }
 
     cancelAction.onclick = () => {
@@ -88,5 +89,13 @@ products.forEach(value => {
             submitActions.setAttribute('data-state', 'disabled')
         }
         editAction.setAttribute('data-state', 'enabled')
+
+        for (const product of products) {
+            product.setAttribute('data-state', 'disabled-show');
+        }
+
+        document.location.href = "#";
+
+        window.scrollTo(0, 0);
     }
 })

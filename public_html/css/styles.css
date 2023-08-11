@@ -142,6 +142,11 @@ textarea {
     margin-top: var(--flow-space, 1em);
 }
 
+.ut-info-wide-article {
+    padding: 4em 10%;
+}
+
+
 /*-------------------  -----------  ----------------------*/
    /*==================* Site Wide *====================*/
 /*-------------------  -----------  ----------------------*/
@@ -217,10 +222,80 @@ textarea {
     transition: all 0.1s linear;
 }
 
-.info-wide-article {
-    padding: 4em 10%;
+
+/* basic form - For General forms, layout and miscellanous info */
+
+.basic-form :is(label, textarea, input, select) {
+    width: 100%;
+    border-radius: 0.2em;
+    position: relative;
 }
 
+.basic-form {
+    margin: 0em auto 3em auto;
+    max-width: 35em;
+}
+
+.basic-form label {
+    display: block;
+}
+
+.basic-form :is(input, textarea, select) {
+    padding: 0.4em;
+}
+
+.basic-form label:has(+ *:required)::after {
+    content: "Required";
+    background-color: var(--brown-lighter);
+    color: var(--yellow-default);
+    padding: 0.3em;
+    border-radius: 4px;
+    position: absolute;
+    right: 0;
+}
+
+.basic-form span {
+    position: relative;
+    left: 0.3em;
+    font-size: 1.7em;
+}
+
+.basic-form *:invalid + span::after {
+    content: "x";
+    color: var(--red-invalid-symbol);
+    position: absolute;
+}
+
+.basic-form *:valid + span::after {
+    content: "✓";
+    color: green;
+    position: absolute;
+}
+
+.basic-form .button-link {
+    font-size: 1.5em;
+    width: 100%;
+}
+
+
+/* Form card - Typografy and colors */
+
+.form-card *:disabled {
+    background-color: var(--brown-darker);
+    color: var(--yellow-default);
+    border: 0;
+    text-indent: 0;
+    padding: 0;
+    box-shadow: var(--yellow-default) 0 0 3px;
+    padding: 0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.form-card *:invalid {
+    box-shadow: inset var(--red-invalid-input) 0px 0px 3px 0px;
+    animation: input-invalid 1.0s linear infinite; 
+}
 
 .form-card {
     border-radius: 1em;
@@ -262,7 +337,6 @@ textarea {
 
 .product-card img {
     border-radius: 0.5em;
-    margin-bottom: 0.4em;
 }
 
 .product-card-info {
@@ -271,33 +345,7 @@ textarea {
 
 .product-card-title {
     font-size: 1.2em;
-    margin-bottom: 0.4em;
     position: relative;
-}
-
-.product-card-title h2 {
-    display: inline;
-}
-
-.product-card-title span {
-    right: 0;
-    position: absolute;
-}
-
-.product-card p {
-    margin-bottom: 1.0em;
-}
-
-.product-card .button-link {
-    padding: 0.6em 2em;
-}
-
-.product-card input {
-    margin-left: 1em;
-    width: 6em;
-    border: 1px solid var(--brown-darker);
-    height: 1.5em;
-    background-color: var(--yellow-input);
 }
 
 /*-------------------  -----------  ----------------------*/
@@ -530,37 +578,6 @@ textarea {
     padding-top: 5em;
 }
 
-.basic-form :is(label, textarea, input, select) {
-    width: 100%;
-    border-radius: 0.2em;
-    position: relative;
-}
-
-.basic-form {
-    margin: 0em auto 3em auto;
-    max-width: 35em;
-}
-
-.basic-form label {
-    display: block;
-}
-
-.basic-form :is(input, textarea, select) {
-    padding: 0.4em;
-}
-
-.basic-form *:disabled {
-    background-color: var(--brown-darker);
-    color: var(--yellow-default);
-    border: 0;
-    text-indent: 0;
-    padding: 0;
-    box-shadow: var(--yellow-default) 0 0 3px;
-    padding: 0.5em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .contact-link {
     text-align: right;
 }
@@ -583,46 +600,6 @@ input:-webkit-autofill {
         box-shadow: inset var(--red-invalid-input) 0px 0px 3px 0px;
     }
 }
-
-.basic-form *:invalid {
-    box-shadow: inset var(--red-invalid-input) 0px 0px 3px 0px;
-    animation: input-invalid 1.0s linear infinite; 
-}
-
-.basic-form label:has(+ *:required)::after {
-    content: "Required";
-    background-color: var(--brown-lighter);
-    color: var(--yellow-default);
-    padding: 0.3em;
-    border-radius: 4px;
-    position: absolute;
-    right: 0;
-}
-
-.basic-form span {
-    position: relative;
-    left: 0.3em;
-    font-size: 1.7em;
-}
-
-.basic-form *:invalid + span::after {
-    content: "x";
-    color: var(--red-invalid-symbol);
-    position: absolute;
-}
-
-.basic-form *:valid + span::after {
-    content: "✓";
-    color: green;
-    position: absolute;
-}
-
-.basic-form .button-link {
-    border: 0;
-    font-size: 1.5em;
-    width: 100%;
-}
-
 /*-------------------  -----------  ----------------------*/
    /*==================* Login *====================*/
 /*-------------------  -----------  ----------------------*/
@@ -649,6 +626,7 @@ input:-webkit-autofill {
 /*-------------------  -----------  ----------------------*/
    /*==================* Menu *====================*/
 /*-------------------  -----------  ----------------------*/
+
 
 .menu-type-list {
     background-color: var(--brown-lighter);
@@ -708,10 +686,46 @@ input:-webkit-autofill {
     display: grid;
     gap: 2em;
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-    align-items: flex-start;
     align-content: flex-start;
 }
 
+.product-menu-card-info {
+    --flow-space: 10px;
+}
+
+.product-menu-card img {
+    aspect-ratio: 1.6;
+    object-fit: cover;
+}
+
+.product-menu-card {
+    display: flex;
+    flex-flow: column;
+}
+
+.product-menu-card .button-link {
+    padding: 0.6em 2em;
+}
+
+.product-menu-card input {
+    border: 1px solid var(--brown-darker);
+    background-color: var(--yellow-input);
+    width: 5em;
+    margin-left: 10px;
+}
+
+.product-menu-card .product-card-title h2 {
+    display: inline;
+}
+
+.product-menu-card .product-card-title span {
+    right: 0;
+    position: absolute;
+}
+
+.product-menu-card .product-card-info {
+    flex: 1;
+}
 
 
 /*-------------------  -----------  ----------------------*/
@@ -805,6 +819,10 @@ input:-webkit-autofill {
     --flow-space: 20px;
 }
 
+.stock-main .menu-list-items {
+    align-items: flex-start;
+}
+
 .stock-main h1 {
     margin: 0.2em 0;
 }
@@ -815,10 +833,34 @@ input:-webkit-autofill {
     font-size: 1.5em;
 }
 
-.product-stock-card img {
-    border-radius: 1em;
+.products-stock-change-image {
+    display: none;
 }
 
+.products-stock-change-image-label {
+    transition: all 0.1s linear;
+}
+
+.product-stock-card:has(input:enabled) .products-stock-change-image-label:hover {
+    transition: all 0.1s linear;
+    cursor: pointer;
+    scale: 1.05;
+    position: relative;
+}
+
+.product-stock-card:has(input:enabled) .products-stock-change-image-label:hover::after {
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    content: "Change Image";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+}
 
 /*-------------------  -----------  ----------------------*/
 /*==================* Modifiers *====================*/

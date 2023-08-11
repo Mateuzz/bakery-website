@@ -9,4 +9,6 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 RewriteRule ^.*$ index.php [NE,QSA]
 
 php_value include_path ".:../src/"
+php_value upload_max_filesize "9m"
+php_value post_max_size "12m"
 
