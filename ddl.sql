@@ -6,7 +6,8 @@ create table users (
     email varchar(120) NOT NULL,
     password varchar(120) NOT NULL,
     birth DATE NOT NULL,
-    telephone varchar(40) NOT NULL
+    telephone varchar(40) NOT NULL,
+    flag enum('common', 'admin') NOT NULL DEFAULT 'common'
 );
 
 create table products (

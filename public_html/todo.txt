@@ -1,8 +1,0 @@
-html
-    admin page 
-        controle estoque.
-            adicionar, alterar e remover item
-
-products
-
-

@@ -20,15 +20,21 @@ const CONTROLLERS_PATH = [
     "/user/signup" => "signupPage",
     "/admin/stock" => "stockControlPage",
     "/admin/stock/edit" => "stockEditPage",
+    "/admin/stock/add" => "stockAddPage",
 ];
 
 
-if (isset(CONTROLLERS_PATH[$path])) {
-    session_start();
-    $controller = CONTROLLERS_PATH[$path];
-    echo $controller($path);
-} else {
-    http_response_code(404);
+try {
+    if (isset(CONTROLLERS_PATH[$path])) {
+        session_start();
+        $controller = CONTROLLERS_PATH[$path];
+        echo $controller($path);
+    } else {
+        http_response_code(404);
+    }
+} catch (Error) {
+    http_response_code(500);
 }
+
 
 ?>
