@@ -18,6 +18,7 @@ const CONTROLLERS_PATH = [
     "/user/logged" => "loggedPage",
     "/user/logout" => "logoutPage",
     "/user/signup" => "signupPage",
+    "/user/api" => "userApi",
     "/admin/stock" => "stockControlPage",
     "/admin/stock/edit" => "stockEditPage",
     "/admin/stock/add" => "stockAddPage",

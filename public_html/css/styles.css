@@ -27,12 +27,13 @@
    /*==================* Fonts *====================*/
 /*-------------------  -----------  ----------------------*/
 
-@font-face {
-    font-family: "Campagnon";
-    src: url("/fonts/Compagnon/compagnon-medium-webfont.woff2") format("woff2");
-    font-weight: normal;
-    font-style: normal;
-}
+/* @font-face { */
+/*     font-family: "Campagnon"; */
+/*     src: url("/fonts/Compagnon/compagnon-medium-webfont.woff2") format("woff2"); */
+/*     font-weight: normal; */
+/*     font-style: normal; */
+/*     font-display: fallback; */
+/* } */
 
 @font-face {
     font-family: "KingThings";
@@ -41,14 +42,17 @@
         url("/fonts/KingThings/Kingthings_Foundation.ttf") format("ttf");
     font-weight: normal;
     font-style: normal;
+    font-display: fallback;
+    unicode-range: U+0025-00FF;
 }
 
-@font-face {
-    font-family: "ShanRegular";
-    src: url("/fonts/Shangrilian/ShanRegular.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-}
+/* @font-face { */
+/*     font-family: "ShanRegular"; */
+/*     src: url("/fonts/Shangrilian/ShanRegular.woff") format("woff"); */
+/*     font-weight: normal; */
+/*     font-style: normal; */
+/*     font-display: fallback; */
+/* } */
 
 
 /*-------------------  -----------  ----------------------*/
@@ -71,7 +75,7 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-    background-color: var(--bg-default);
+    background-color: var(--bg-super-light);
     border: 2px solid black;
     border-radius: 10px;
     box-shadow: inset white 1px 0px 2px;
@@ -271,19 +275,19 @@ textarea {
     right: 0;
 }
 
-.basic-form span {
+.basic-form .validity-symbol {
     position: relative;
     left: 0.3em;
     font-size: 1.7em;
 }
 
-.basic-form *:invalid + span::after {
+.basic-form *:invalid + .validity-symbol::after {
     content: "x";
     color: var(--red-invalid-symbol);
     position: absolute;
 }
 
-.basic-form *:valid + span::after {
+.basic-form *:valid + .validity-symbol::after {
     content: "✓";
     color: green;
     position: absolute;
@@ -297,7 +301,7 @@ textarea {
 
 /* Form card - Typografy and colors */
 
-.form-card *:invalid {
+.form-card is:(input, textarea):invalid {
     box-shadow: inset var(--red-invalid-input) 0px 0px 3px 0px;
     animation: input-invalid 1.0s linear infinite; 
 }
@@ -346,12 +350,10 @@ textarea {
     background-color: var(--bg-input-focus);
 }
 
-
-.product-card {
+.light-card {
     border: 2px solid var(--bd-darker);
     padding: 1em;
     border-radius: 1em;
-    max-width: 600px;
     box-shadow: inset var(--bg-super-light) 0 0 6px;
 }
 
@@ -373,22 +375,10 @@ textarea {
     flex-flow: row nowrap;
 }
 
-.main-items-page aside {
-    padding: 1em;
-    overflow-y: scroll;
-}
-
 .main-items-page > article {
     flex: 1;
 }
 
-.aside-nav {
-    border-radius: 0;
-}
-
-.menu-main .aside-nav {
-    font-size: 1.5em;
-}
 
 /*-------------------  -----------  ----------------------*/
    /*==================* Pages *====================*/
@@ -665,6 +655,23 @@ input:-webkit-autofill {
 
 
 /*-------------------  -----------  ----------------------*/
+   /*==================* Sign Up *====================*/
+/*-------------------  -----------  ----------------------*/
+
+.form-validity-message {
+    margin-top: 6px;
+}
+
+input:invalid ~ .form-validity-message {
+    color: var(--red-invalid-input);
+}
+
+input:valid ~ .form-validity-message {
+    color: #83ff48;
+}
+
+
+/*-------------------  -----------  ----------------------*/
    /*==================* Menu *====================*/
 /*-------------------  -----------  ----------------------*/
 
@@ -689,18 +696,25 @@ input:-webkit-autofill {
     font-size: 1.3em;
 }
 
-
 .menu-categories-nav {
+    margin-top: 4em;
+    padding: 1.0em;
+}
+
+.menu-categories-nav ul {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    font-size: 1.4em;
+}
+
+.menu-categories-nav a {
+    width: 100%;
     min-width: 7em;
 }
 
 .menu-select-category {
-    background-color: transparent;
-    color: var(--fg-default);
-}
-
-.menu-select-category:hover {
-    color: var(--link-blue-stronger);
+    font-weight: normal;
 }
 
 
@@ -712,8 +726,8 @@ input:-webkit-autofill {
 .menu-list-items {
     padding: 0 2em 2em 2em;
     display: grid;
-    gap: 2em;
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    gap: 4em;
     align-content: flex-start;
 }
 
@@ -759,10 +773,8 @@ input:-webkit-autofill {
     padding: 2em 0;
 }
 
-.cart-items {
-}
-
 .cart-item-card {
+    --min-preload-height: 100px;
     background-color: var(--bg-default);
     background: linear-gradient(225deg, var(--bg-default) 60%, var(--bd-darker));
     color: var(--fg-default);
@@ -886,7 +898,7 @@ input:-webkit-autofill {
 .product-stock-card:has(input:enabled) .products-stock-change-image-label:hover::after {
     background-color: rgba(0, 0, 0, 0.3);
     z-index: 1;
-    content: "Change Image";
+    content: "Alterar Imagem";
     position: absolute;
     width: 100%;
     height: 100%;
@@ -986,4 +998,35 @@ input:-webkit-autofill {
     .header-logo {
         display: none;
     }
+}
+
+.loading-wheel-wrapper {
+    position: relative;
+    min-height: var(--min-preload-height, 200px);
+}
+
+@keyframes loading {
+    0% {
+        rotate: 0;
+    }
+
+    100% {
+        rotate: 360deg;
+    }
+}
+
+.loading-wheel-wrapper::after {
+    content: "";
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    border: 8px solid var(--bd-darker);
+    top: 50%;
+    left: 50%;
+    margin-top: -30px;
+    margin-left: -30px;
+    border-radius: 30px;
+    clip: rect(0, 30px, 30px, 0);
+    transform-origin: center;
+    animation: loading 0.9s linear forwards infinite
 }
