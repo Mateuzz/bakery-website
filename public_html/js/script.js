@@ -24,7 +24,7 @@ function getUrlAnchor() {
 /*             Login
 /***************************************/
 
-function validateName(name) { 
+function validateName(name) {
     if (!name)
         return "Username is required"
     len = name.length
@@ -44,26 +44,26 @@ function validateEmail(email) {
     if (email.length > 60)
         return "Email must have not more than 60 characters"
 
-    if (!/^[\w]+@[\w]+\.[\w]+$/.test(email))
+    if (!/^[\w\.]+@[\w]+\.[\w]+$/.test(email))
         return "Email must be valid email"
     return false
 }
 
 function validateBirthDate(date) {
-    if (!date) 
+    if (!date)
         return "Birth Date is required"
 
     const dateRegex = /^([\d]{1,4})-([\d]{1,2})-([\d]{1,2})$/
     console.log(date)
     const match = date.match(dateRegex)
-    if (!match)  {
+    if (!match) {
         return "Invalid date format"
     }
 
     const year = match[1]
     const month = match[2]
     const day = match[3]
-    
+
     if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
         return "Invalid date format"
     }
@@ -80,7 +80,7 @@ function validateTelephone(tel, matches) {
         return "Telephone must have not more than 40 characters"
 
     const match = teleRegex.test(tel)
-    if (!match) 
+    if (!match)
         return "Telephone must have the format (ddd) xxxx xxxx"
 
     return false
@@ -93,14 +93,14 @@ function validatePassword(pass) {
     if (pass.length < 8)
         return "Password must have at least 8 characters"
 
-    if (!/[a-z]/.test(pass) || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass)) 
+    if (!/[a-z]/.test(pass) || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass))
         return "Password must have uppercase, lowercase, and numbers"
 
     return false
 }
 
 function validateConfirmPassword(confirmPass, originalPass) {
-    if (confirmPass != originalPass) 
+    if (confirmPass != originalPass)
         return "Passwords must be equal"
     return false
 }
@@ -147,19 +147,16 @@ function signupPage() {
         setValidityMessage(element, error, 'error')
     }
 
-    const fields = [
-        [form.querySelector('#name'), validateName],
-        [form.querySelector('#email'), validateEmail],
-        [form.querySelector('#birth-date'), validateBirthDate],
-        [form.querySelector('#telephone'), validateTelephone]
-    ]
-
-    for (const field of fields) {
-        field[0].oninput = () => onInputsetError(field[0], field[1])
-    }
-
-    const passConfirm = form.querySelector('#password-confirm')
+    const name = form.querySelector("#name")
+    const email = form.querySelector("#email")
+    const birth = form.querySelector("#birth-date")
+    const tel = form.querySelector("#telephone")
     const pass = form.querySelector('#password')
+    const passConfirm = form.querySelector('#password-confirm')
+
+    name.oninput = () => onInputsetError(name, validateName)
+    tel.oninput = () => onInputsetError(tel, validateTelephone)
+    birth.oninput = () => onInputsetError(birth, validateBirthDate)
 
     const passOnInput = () => {
         onInputsetError(pass, validatePassword)
@@ -170,22 +167,28 @@ function signupPage() {
     passConfirm.oninput = passOnInput
 
     let checkForExistingUserInterval = null
-    const emailField = fields[1][0]
 
-    emailField.addEventListener('input', () => {
+    email.addEventListener('input', () => {
+        onInputsetError(email, validateEmail)
+        email.removeAttribute('data-validating')
+
         if (checkForExistingUserInterval) {
             clearTimeout(checkForExistingUserInterval)
             checkForExistingUserInterval = null
         }
 
-        if (!emailField.checkValidity())
+        if (!email.checkValidity())
             return
 
+        email.setCustomValidity(' ')
+        email.setAttribute('data-validating', '')
+
         checkForExistingUserInterval = setTimeout(async () => {
-            if (await getUser(emailField.value)) {
-                setValidityMessage(emailField, "Email already taken", 'error')
+            email.removeAttribute('data-validating')
+            if (await getUser(email.value)) {
+                setValidityMessage(email, "Email already taken", 'error')
             } else {
-                setValidityMessage(emailField, "Email is available", 'msg')
+                setValidityMessage(email, "Email is available", 'msg')
             }
         }, 1000);
     })
@@ -193,42 +196,42 @@ function signupPage() {
 
 
 /* ************************************/
-    /*             Menu Page              */
-    /***************************************/
+/*             Menu Page              */
+/***************************************/
 
-    function menuPage() {
-        function filterProductsByCategory(id) {
-            for (const product of products) {
-                const productId = product.getAttribute('data-category-id')
-                if (productId == id) {
-                    enable(product)
-                } else {
-                    disable(product)
-                }
+function menuPage() {
+    const menuSelectCategoryButtons = $all('.menu-select-category')
+
+    const products = $all('.product-menu-card')
+    const anchor = getUrlAnchor()
+
+    function filterProducts(button) {
+        const id = button.getAttribute('data-category-id')
+
+        for (const product of products) {
+            const productId = product.getAttribute('data-category-id')
+            if (productId == id) {
+                enable(product)
+            } else {
+                disable(product)
             }
         }
-
-        const menuSelectCategoryButtons = $all('.menu-select-category')
-
-        const products = $all('.product-menu-card')
-        const anchor = getUrlAnchor()
-
-        for (const button of menuSelectCategoryButtons) {
-            // if is empty will go in the first button
-            if (button.href.includes(anchor)) {
-                const buttonCategoryId = button.getAttribute('data-category-id')
-                filterProductsByCategory(buttonCategoryId)
-                break
-            }
-        }
-
-        menuSelectCategoryButtons.forEach(button => {
-            button.onclick = () => {
-                const buttonCategoryId = button.getAttribute('data-category-id')
-                filterProductsByCategory(buttonCategoryId)
-            }
-        })
     }
+
+    for (const button of menuSelectCategoryButtons) {
+        // if is empty will go in the first button
+        if (button.href.includes(anchor)) {
+            filterProducts(button)
+            break
+        }
+    }
+
+    menuSelectCategoryButtons.forEach(button => {
+        button.onclick = () => {
+            filterProducts(button)
+        }
+    })
+}
 
 /* ************************************/
     /*             Cart Page              */
@@ -296,6 +299,9 @@ function signupPage() {
 
             const inputs = value.querySelectorAll('input, select, textarea')
 
+            const productImg = value.querySelector('img')
+            const originalProductImgSrc = productImg.src
+
             editAction.onclick = () => {
                 for (const input of inputs) {
                     input.disabled = false
@@ -323,6 +329,8 @@ function signupPage() {
                     product.setAttribute('data-state', 'disabled-show');
                 }
 
+                productImg.src = originalProductImgSrc
+
                 document.location.href = "#";
 
                 window.scrollTo(0, 0);
@@ -332,8 +340,7 @@ function signupPage() {
                 const file = stockChangeImage.files[0]
                 if (imagesTypes.includes(file.type)) {
                     const url = URL.createObjectURL(file)
-                    const productImgElement = value.querySelector('img')
-                    productImgElement.src = url
+                    productImg.src = url
                 } else {
                     alert("File uploaded is not a image")
                 }
