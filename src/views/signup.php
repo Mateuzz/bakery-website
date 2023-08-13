@@ -16,7 +16,7 @@ $errorsHtml = ob_get_clean();
 
 echo <<< _EOF
 <main class="main-card-page">
-    <form class="signup-form ut-flow form-card basic-form" method="post" action="">
+    <form class="signup-form ut-flow form-card basic-form" method="post" action="" novalidate>
         <h1>Criar Conta</h1>
 
         $errorsHtml
@@ -64,7 +64,7 @@ echo <<< _EOF
         </div>
 
         <div class="contact-link">
-            <a href="login">Já tem uma conta?</a>
+            <a href="/user/login">Já tem uma conta?</a>
         </div>
 
         <button type="submit" name="submit" value="submit" class="button-link">Crie sua Conta</button>

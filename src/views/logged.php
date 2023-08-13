@@ -17,7 +17,7 @@ echo <<<_EOF
             <input type="tel" value="$s_tel" name="telephone" id="" disabled>
         </div>
         <div>
-            <a href="logout" class="button-link">Log out</a>
+            <a href="/user/logout" class="button-link">Log out</a>
         </div>
     </div>
 </main>

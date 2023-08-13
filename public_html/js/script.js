@@ -24,7 +24,7 @@ function getUrlAnchor() {
 /*             Login
 /***************************************/
 
-function validateName(name) {
+function nameError(name) {
     if (!name)
         return "Username is required"
     len = name.length
@@ -34,10 +34,10 @@ function validateName(name) {
     if (/[^\w\s]/.test(name)) {
         return "Name can't have special characters"
     }
-    return false
+    return ""
 }
 
-function validateEmail(email) {
+function emailError(email) {
     if (!email)
         return "Email is required"
 
@@ -46,10 +46,10 @@ function validateEmail(email) {
 
     if (!/^[\w\.]+@[\w]+\.[\w]+$/.test(email))
         return "Email must be valid email"
-    return false
+    return ""
 }
 
-function validateBirthDate(date) {
+function birthError(date) {
     if (!date)
         return "Birth Date is required"
 
@@ -67,10 +67,10 @@ function validateBirthDate(date) {
     if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
         return "Invalid date format"
     }
-    return false
+    return ""
 }
 
-function validateTelephone(tel, matches) {
+function telError(tel, matches) {
     if (!tel)
         return "Telephone is required"
 
@@ -83,10 +83,10 @@ function validateTelephone(tel, matches) {
     if (!match)
         return "Telephone must have the format (ddd) xxxx xxxx"
 
-    return false
+    return ""
 }
 
-function validatePassword(pass) {
+function passError(pass) {
     if (!pass)
         return "Password is required"
 
@@ -96,29 +96,28 @@ function validatePassword(pass) {
     if (!/[a-z]/.test(pass) || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass))
         return "Password must have uppercase, lowercase, and numbers"
 
-    return false
+    return ""
 }
 
-function validateConfirmPassword(confirmPass, originalPass) {
+function confirmPassError(confirmPass, originalPass) {
     if (confirmPass != originalPass)
         return "Passwords must be equal"
-    return false
+    return ""
 }
 
-async function getUser(email) {
+async function isEmailAvailable(email) {
     email = email.toLowerCase()
 
     try {
         const response = await fetch(`http://localhost/user/api?get_user=&email=${email}`)
         if (!response.ok)
-            return null
+            return false
         const text = await response.text()
-        if (text == "not found") {
-            return null
-        }
-        return text
+        if (text == "not found")
+            return true
+        return false
     } catch (e) {
-        return null
+        return true
     }
 }
 
@@ -127,6 +126,14 @@ function signupPage() {
     if (!form)
         return
 
+    const name = form.querySelector("#name")
+    const email = form.querySelector("#email")
+    const birth = form.querySelector("#birth-date")
+    const tel = form.querySelector("#telephone")
+    const pass = form.querySelector('#password')
+    const passConfirm = form.querySelector('#password-confirm')
+    let checkForExistingUserInterval = null
+
     function setValidityMessage(element, msg, type) {
         const msgElement = element.parentElement.querySelector('.form-validity-message')
         if (msg && msg != msgElement.textContent) {
@@ -134,42 +141,21 @@ function signupPage() {
         } else {
             msgElement.textContent = ''
         }
+    }
 
-        if (msg && type == 'error') {
+    function onErrorValidate(element, validateCallback, extraArgs) {
+        const error = validateCallback(element.value, extraArgs)
+        if (error) {
+            setValidityMessage(element, error, 'error')
             element.setCustomValidity(' ')
         } else {
             element.setCustomValidity('')
+            setValidityMessage(element, '')
         }
+        return error
     }
 
-    function onInputsetError(element, validateCallback, extraArgs) {
-        const error = validateCallback(element.value, extraArgs)
-        setValidityMessage(element, error, 'error')
-    }
-
-    const name = form.querySelector("#name")
-    const email = form.querySelector("#email")
-    const birth = form.querySelector("#birth-date")
-    const tel = form.querySelector("#telephone")
-    const pass = form.querySelector('#password')
-    const passConfirm = form.querySelector('#password-confirm')
-
-    name.oninput = () => onInputsetError(name, validateName)
-    tel.oninput = () => onInputsetError(tel, validateTelephone)
-    birth.oninput = () => onInputsetError(birth, validateBirthDate)
-
-    const passOnInput = () => {
-        onInputsetError(pass, validatePassword)
-        onInputsetError(passConfirm, validateConfirmPassword, pass.value)
-    }
-
-    pass.oninput = passOnInput
-    passConfirm.oninput = passOnInput
-
-    let checkForExistingUserInterval = null
-
-    email.addEventListener('input', () => {
-        onInputsetError(email, validateEmail)
+    function emailOnInputValidate() {
         email.removeAttribute('data-validating')
 
         if (checkForExistingUserInterval) {
@@ -177,21 +163,60 @@ function signupPage() {
             checkForExistingUserInterval = null
         }
 
-        if (!email.checkValidity())
+        if (onErrorValidate(email, emailError))
             return
 
         email.setCustomValidity(' ')
-        email.setAttribute('data-validating', '')
+        email.setAttribute('data-valid-special', 'validating')
 
         checkForExistingUserInterval = setTimeout(async () => {
-            email.removeAttribute('data-validating')
-            if (await getUser(email.value)) {
+            if (!(await isEmailAvailable(email.value))) {
+                email.setAttribute('data-valid-special', 'taken')
                 setValidityMessage(email, "Email already taken", 'error')
             } else {
+                email.setAttribute('data-valid-special', 'valid')
+                email.setCustomValidity('')
                 setValidityMessage(email, "Email is available", 'msg')
             }
-        }, 1000);
-    })
+        }, 750);
+    }
+
+    function emailOnSubmitValidate() {
+        const oldState = email.getAttribute('data-valid-special')
+        if (oldState == 'validating' || oldState == 'taken') {
+            email.setCustomValidity(' ')
+            return true
+        }
+        return onErrorValidate(email, emailError)
+    }
+
+    const fields = [name, email, birth, tel, pass, passConfirm]
+
+    name.oninput = () => onErrorValidate(name, nameError)
+    tel.oninput = () => onErrorValidate(tel, telError)
+    birth.oninput = () => onErrorValidate(birth, birthError)
+    pass.oninput = () => onErrorValidate(password, passError)
+    passConfirm.oninput = () => onErrorValidate(passConfirm, confirmPassError, pass.value)
+    email.oninput = emailOnInputValidate
+
+    for (const f of fields) 
+        f.onsubmit = f.oninput
+
+    email.onsubmit = emailOnSubmitValidate
+
+    form.onsubmit = e => {
+        let firstError = null
+
+        for (const field of fields) {
+            if (field.onsubmit() && !firstError)
+                firstError = field
+        }
+
+        if (firstError) {
+            firstError.focus()
+            e.preventDefault()
+        }
+    }
 }
 
 
@@ -234,136 +259,136 @@ function menuPage() {
 }
 
 /* ************************************/
-    /*             Cart Page              */
-    /***************************************/
+/*             Cart Page              */
+/***************************************/
 
-    function cartPage() {
-        const cartItemsSection = $('.cart-items')
+function cartPage() {
+    const cartItemsSection = $('.cart-items')
 
-        if (!cartItemsSection)
-            return
+    if (!cartItemsSection)
+        return
 
-        const allCartItems = $all('.cart-item')
-        const subtotal = $('.cart-finish-subtotal')
-        const total = $('.cart-finish-total')
-        const installment = $('.cart-finish-installment')
+    const allCartItems = $all('.cart-item')
+    const subtotal = $('.cart-finish-subtotal')
+    const total = $('.cart-finish-total')
+    const installment = $('.cart-finish-installment')
 
-        let totalPrice = 0
+    let totalPrice = 0
 
-        allCartItems.forEach(value => {
-            const price = Number(value.querySelector('.cart-item-info-total-number').textContent)
+    allCartItems.forEach(value => {
+        const price = Number(value.querySelector('.cart-item-info-total-number').textContent)
 
-            totalPrice += price
-        });
+        totalPrice += price
+    });
 
-        subtotal.textContent = `R\$${totalPrice.toFixed(2)}`
-        total.textContent = subtotal.textContent
-        installment.textContent = `Até 12x de R\$${(totalPrice / 12.0).toFixed(2)} sem juros.`
-    }
+    subtotal.textContent = `R\$${totalPrice.toFixed(2)}`
+    total.textContent = subtotal.textContent
+    installment.textContent = `Até 12x de R\$${(totalPrice / 12.0).toFixed(2)} sem juros.`
+}
 
 
 
 
 /* ************************************/
-    /*             Stock Page             */
-    /***************************************/
+/*             Stock Page             */
+/***************************************/
 
 
-    function stockPage() {
-        if (!$('.stock-main'))
-            return
+function stockPage() {
+    if (!$('.stock-main'))
+        return
 
-        const enableItemButtons = $all('.enable-item-button')
-        const disableItemButtons = $all('.disable-item-button')
-        const products = $all('.product-stock-card')
+    const enableItemButtons = $all('.enable-item-button')
+    const disableItemButtons = $all('.disable-item-button')
+    const products = $all('.product-stock-card')
 
-        enableItemButtons.forEach(button => {
-            const itemId = button.getAttribute('data-enable-for')
-            const itemAssoc = document.getElementById(itemId)
+    enableItemButtons.forEach(button => {
+        const itemId = button.getAttribute('data-enable-for')
+        const itemAssoc = document.getElementById(itemId)
 
-            button.addEventListener('click', () => enable(itemAssoc))
-        })
+        button.addEventListener('click', () => enable(itemAssoc))
+    })
 
-        disableItemButtons.forEach(button => {
-            const itemId = button.getAttribute('data-disable-for')
-            const itemAssoc = document.getElementById(itemId)
+    disableItemButtons.forEach(button => {
+        const itemId = button.getAttribute('data-disable-for')
+        const itemAssoc = document.getElementById(itemId)
 
-            button.addEventListener('click', () => disable(itemAssoc))
-        })
+        button.addEventListener('click', () => disable(itemAssoc))
+    })
 
-        products.forEach(value => {
-            const submitActions = value.querySelector('.product-card-submit-actions')
+    products.forEach(value => {
+        const submitActions = value.querySelector('.product-card-submit-actions')
 
-            const editAction = value.querySelector('.product-stock-edit')
-            const cancelAction = value.querySelector('.product-stock-cancel')
+        const editAction = value.querySelector('.product-stock-edit')
+        const cancelAction = value.querySelector('.product-stock-cancel')
 
-            const inputs = value.querySelectorAll('input, select, textarea')
+        const inputs = value.querySelectorAll('input, select, textarea')
 
-            const productImg = value.querySelector('img')
-            const originalProductImgSrc = productImg.src
+        const productImg = value.querySelector('img')
+        const originalProductImgSrc = productImg.src
 
-            editAction.onclick = () => {
-                for (const input of inputs) {
-                    input.disabled = false
-                    enable(submitActions)
-                }
-                disable(editAction)
-
-                for (const product of products) {
-                    if (product != value) {
-                        disable(product)
-                    }
-                }
-
-                document.location.href = `#name_${value.getAttribute('data-id')}`
+        editAction.onclick = () => {
+            for (const input of inputs) {
+                input.disabled = false
+                enable(submitActions)
             }
+            disable(editAction)
 
-            cancelAction.onclick = () => {
-                for (const input of inputs) {
-                    input.disabled = true
-                    disable(submitActions)
-                }
-                enable(editAction)
-
-                for (const product of products) {
-                    product.setAttribute('data-state', 'disabled-show');
-                }
-
-                productImg.src = originalProductImgSrc
-
-                document.location.href = "#";
-
-                window.scrollTo(0, 0);
-            }
-
-            function showProductNewImage() {
-                const file = stockChangeImage.files[0]
-                if (imagesTypes.includes(file.type)) {
-                    const url = URL.createObjectURL(file)
-                    productImg.src = url
-                } else {
-                    alert("File uploaded is not a image")
+            for (const product of products) {
+                if (product != value) {
+                    disable(product)
                 }
             }
 
-            const stockChangeImage = value.querySelector('.products-stock-change-image input')
+            document.location.href = `#name_${value.getAttribute('data-id')}`
+        }
 
-            const imagesTypes = [
-                "image/apng",
-                "image/bmp",
-                "image/gif",
-                "image/jpeg",
-                "image/pjpeg",
-                "image/png",
-                "image/svg+xml",
-                "image/tiff",
-                "image/webp",
-                "image/x-icon",
-            ]
+        cancelAction.onclick = () => {
+            for (const input of inputs) {
+                input.disabled = true
+                disable(submitActions)
+            }
+            enable(editAction)
 
-            stockChangeImage.onchange = showProductNewImage
-        })
-    }
+            for (const product of products) {
+                product.setAttribute('data-state', 'disabled-show');
+            }
+
+            productImg.src = originalProductImgSrc
+
+            document.location.href = "#";
+
+            window.scrollTo(0, 0);
+        }
+
+        function showProductNewImage() {
+            const file = stockChangeImage.files[0]
+            if (imagesTypes.includes(file.type)) {
+                const url = URL.createObjectURL(file)
+                productImg.src = url
+            } else {
+                alert("File uploaded is not a image")
+            }
+        }
+
+        const stockChangeImage = value.querySelector('.products-stock-change-image input')
+
+        const imagesTypes = [
+            "image/apng",
+            "image/bmp",
+            "image/gif",
+            "image/jpeg",
+            "image/pjpeg",
+            "image/png",
+            "image/svg+xml",
+            "image/tiff",
+            "image/webp",
+            "image/x-icon",
+        ]
+
+        stockChangeImage.onchange = showProductNewImage
+    })
+}
 
 function menuStockPage() {
     const hideTypeList = $('#hide-menu-type-list')

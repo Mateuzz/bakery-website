@@ -299,7 +299,7 @@ textarea {
     position: absolute;
 }
 
-.basic-form [data-validating] + .validity-symbol::after {
+.basic-form [data-valid-special='validating'] + .validity-symbol::after {
     content: "!";
     color: yellow;
     position: absolute;

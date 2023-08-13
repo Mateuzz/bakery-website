@@ -47,7 +47,7 @@ echo <<< _EOF
             </div>
 
             <div class="contact-link">
-                <a href="signup">Criar Conta</a>
+                <a href="/user/signup">Criar Conta</a>
             </div>
 
             <button name="submit" type="submit" class="button-link">Login</button>
