@@ -3,9 +3,9 @@
 ob_start();
 
 if ($isAdmin) {
-    echo <<< _EOF
+    echo <<< HTML
         <li><a href="/admin/stock">Admin</a></li>
-    _EOF;
+    HTML;
 }
 
 $adminLink = ob_get_clean();

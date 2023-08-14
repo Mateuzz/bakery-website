@@ -4,26 +4,28 @@ ob_start();
 
 if (isset($loginErrors)) {
     foreach ($loginErrors as $error) {
-        echo<<<_EOF
+        echo<<<HTML
         <div class="login-error">
             $error
         </div>
-        _EOF;
+        HTML;
     }
 }
 
 if (isset($createdAccountMessage)) {
-    echo <<<_EOF
+    echo <<<HTML
         <div class="form-message">
             $createdAccountMessage
         </div>
-    _EOF;
+    HTML;
 }
+
+if (!isset($email))
+    $email = "";
 
 $messagesHtml = ob_get_clean();
 
-
-echo <<< _EOF
+echo <<< HTML
 
 <main class="main-card-page">
         <form class="ut-flow form-card basic-form" method="post" action="">
@@ -54,6 +56,6 @@ echo <<< _EOF
         </form>
 </main>
 
-_EOF
+HTML
 
 ?>

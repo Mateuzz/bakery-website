@@ -4,17 +4,22 @@ ob_start();
 
 if (isset($signupErrors)) {
     foreach ($signupErrors as $error) {
-        echo<<<_EOF
+        echo<<<HTML
         <div class="login-error">
             $error
         </div>
-        _EOF;
+        HTML;
     }
+}
+
+foreach ([$name, $email, $birth, $tel] as $var) {
+    if (!isset($$var))
+        $$var = "";
 }
 
 $errorsHtml = ob_get_clean();
 
-echo <<< _EOF
+echo <<< HTML
 <main class="main-card-page">
     <form class="signup-form ut-flow form-card basic-form" method="post" action="" novalidate>
         <h1>Criar Conta</h1>
@@ -70,7 +75,7 @@ echo <<< _EOF
         <button type="submit" name="submit" value="submit" class="button-link">Crie sua Conta</button>
     </form>
 </main>
-_EOF;
+HTML;
 
 ?>
 

@@ -6,23 +6,26 @@ require_once 'util.php';
 
 const TITLE_SUFFIX = " | Mckay's Bakery";
 
-function startUserSession($userRow) {
+function startUserSession($userRow)
+{
     $_SESSION['logged'] = true;
-    $_SESSION['s_name'] = $userRow['name'];
-    $_SESSION['s_email'] = $userRow['email'];
-    $_SESSION['s_birth'] = $userRow['birth'];
-    $_SESSION['s_tel'] = $userRow['telephone'];
+    $_SESSION['name'] = $userRow['name'];
+    $_SESSION['email'] = $userRow['email'];
+    $_SESSION['birth'] = $userRow['birth'];
+    $_SESSION['tel'] = $userRow['telephone'];
 
     if ($userRow['flag'] == 'admin') {
         $_SESSION['admin'] = true;
     }
 }
 
-function deleteUserSession() {
+function deleteUserSession()
+{
     $_SESSION = [];
 }
 
-function cartAddItem($itemId, $itemQtd) {
+function cartAddItem($itemId, $itemQtd)
+{
     $product = getProduct($itemId);
 
     if ($product) {
@@ -37,11 +40,12 @@ function cartAddItem($itemId, $itemQtd) {
     }
 }
 
-function loginSubmit() {
-    $email = userInput(strtolower($_POST['email']));
-    $password = userInput($_POST['password']);
+function loginSubmit()
+{
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-    $userRow = userLogin($email, $password); 
+    $userRow = userLogin($email, $password);
 
     if ($userRow) {
         startUserSession($userRow);
@@ -51,48 +55,59 @@ function loginSubmit() {
 
     return renderLayout("Login" . TITLE_SUFFIX, "views/login.php", [
         'loginErrors' => ['Invalid Credentials.'],
-        'email' => $email,
+        'email' => htmlspecialchars($email),
     ]);
 }
 
-function signupSubmit() {
-    $name = userInput($_POST['name']);
-    $email = userInput(strtolower($_POST['email']));
-    $birth = userInput($_POST['birth-date']);
-    $tel = userInput($_POST['telephone']);
-    $password = userInput($_POST['password']);
+function signupSubmit()
+{
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $birth = $_POST['birth-date'];
+    $tel = $_POST['telephone'];
+    $password = $_POST['password'];
 
     $errors = userSignup($name, $email, $birth, $tel, $password);
 
     if ($errors) {
         return renderLayout('Cadastrar' . TITLE_SUFFIX, "views/signup.php", [
             'signupErrors' => $errors,
-            'name' => $name,
-            'email' => $email,
-            'birth' => $birth,
-            'tel' => $tel,
-            ]);
-        }
+            'name' => htmlspecialchars($name),
+            'email' => htmlspecialchars($email),
+            'birth' => htmlspecialchars($birth),
+            'tel' => htmlspecialchars($tel),
+        ]);
+    }
 
-        header("location: /user/login?account_created=true");
-        exit();
+    header("location: /user/login?account_created=true");
+    exit();
 }
 
-function loggedPage() {
+function loggedPage()
+{
     if (!isset($_SESSION['logged'])) {
         http_response_code(402);
         return;
     }
 
-    return renderLayout('Logado' . TITLE_SUFFIX, 'views/logged.php', $_SESSION);
+    $info = [
+        'name' => htmlspecialchars($_SESSION['name']),
+        'tel' => htmlspecialchars($_SESSION['tel']),
+        'birth' => htmlspecialchars($_SESSION['birth']),
+        'email' => htmlspecialchars($_SESSION['email']),
+    ];
+
+    return renderLayout('Logado' . TITLE_SUFFIX, 'views/logged.php', $info);
 }
 
-function logoutPage() {
+function logoutPage()
+{
     deleteUserSession();
     header("location: /user/login");
 }
 
-function loginPage() {
+function loginPage()
+{
     if (isset($_SESSION['logged'])) {
         header("location: /user/logged");
         exit();
@@ -102,8 +117,7 @@ function loginPage() {
         return loginSubmit();
     }
 
-    $post = ['email' => ""];
-
+    $post = [];
     if (isset($_GET['account_created'])) {
         $post = [
             'createdAccountMessage' => 'Your Account was created, you can login now'
@@ -113,7 +127,8 @@ function loginPage() {
     return renderLayout("Login" . TITLE_SUFFIX, "views/login.php", $post);
 }
 
-function userApi() {
+function userApi()
+{
     if (isset($_GET['get_user']) && !empty($_GET['email'])) {
         $email = strtolower($_GET['email']);
         $userRow = getUser($email);
@@ -126,7 +141,8 @@ function userApi() {
     return "not found";
 }
 
-function signupPage() {
+function signupPage()
+{
     if (isset($_SESSION['logged'])) {
         header("location: /user/logged");
         exit();
@@ -139,47 +155,53 @@ function signupPage() {
     return renderLayout("Cadastrar" . TITLE_SUFFIX, "views/signup.php");
 }
 
-function homePage() {
+function homePage()
+{
     return renderLayout("Inicio" . TITLE_SUFFIX, "views/home.php", [
         'categories' => categoriesGetAll(),
     ]);
 }
 
-function aboutPage() {
+function aboutPage()
+{
     return renderLayout("Sobre" . TITLE_SUFFIX, "views/about.php");
 }
 
-function contactPage() {
+function contactPage()
+{
     return renderLayout("Contate-nos" . TITLE_SUFFIX, "views/contact.php");
 }
 
-function cartPage() {
+function cartPage()
+{
     if (!isset($_SESSION['cart_items'])) {
         $_SESSION['cart_items'] = [];
     }
 
-        if (!empty($_POST['add-item-id']) && isset($_POST['add-item-qtd']) && $_POST['add-item-id'] > 0) {
-            $itemId = $_POST['add-item-id'];
-            $itemQtd = $_POST['add-item-qtd'];
-            cartAddItem($itemId, $itemQtd);
-        } else if (!empty($_GET['remove-item-id'])) {
-            $itemId = $_GET['remove-item-id'];
-            unset($_SESSION['cart_items'][$itemId]);
-        }
+    if (!empty($_POST['add-item-id']) && isset($_POST['add-item-qtd']) && $_POST['add-item-id'] > 0) {
+        $itemId = $_POST['add-item-id'];
+        $itemQtd = $_POST['add-item-qtd'];
+        cartAddItem($itemId, $itemQtd);
+    } else if (!empty($_GET['remove-item-id'])) {
+        $itemId = $_GET['remove-item-id'];
+        unset($_SESSION['cart_items'][$itemId]);
+    }
 
-        return renderLayout("Meu Carrinho" . TITLE_SUFFIX, "views/cart.php", [
-            'cart_items' => $_SESSION['cart_items']
-        ]);
+    return renderLayout("Meu Carrinho" . TITLE_SUFFIX, "views/cart.php", [
+        'cart_items' => $_SESSION['cart_items']
+    ]);
 }
 
-function menuPage() {
+function menuPage()
+{
     return renderLayout("Menu" . TITLE_SUFFIX, "views/menu.php", [
         'menuAllItems' => productsGetAll(),
         'categories' => categoriesGetAll()
     ]);
 }
 
-function stockControlPage() {
+function stockControlPage()
+{
     if (!isset($_SESSION['admin'])) {
         http_response_code(403);
         return "";
@@ -191,14 +213,16 @@ function stockControlPage() {
     ]);
 }
 
-function stockEditPage() {
+function stockEditPage()
+{
     if (!isset($_SESSION['admin'])) {
         http_response_code(403);
         return "";
     }
 
-    if (!isUnsetAny($_POST, ['submit', 'description']) &&
-        !emptyAny($_POST, ['id', 'category', 'price', 'name'])) {
+    if (isset($_POST['submit']) && isset($_POST['description']) && !empty($_POST['name']) && 
+            !empty($_POST['id']) && !empty($_POST['category']) && 
+            !empty($_POST['price'])) {
         $id = userInput($_POST['id']);
         $category = userInput($_POST['category']);
         $price = userInput($_POST['price']);
@@ -215,14 +239,16 @@ function stockEditPage() {
     header("location: /admin/stock");
 }
 
-function getImg($name) {
+function getImg($name)
+{
     if (isset($_FILES[$name]) && $_FILES[$name]['error'] == 0) {
         return getImgLink($_FILES[$name]);
     }
     return null;
 }
 
-function stockAddPage() {
+function stockAddPage()
+{
     if (!isset($_SESSION['admin'])) {
         http_response_code(403);
         return "";
@@ -236,15 +262,15 @@ function stockAddPage() {
         }
     }
 
-    if (isset($_POST['submit-product']) && !emptyAny($_POST, ['name', 'category', 'price'])) {
-        $name = userInput($_POST['name']);
-        $category = userInput($_POST['category']);
-        $price = userInput($_POST['price']);
+    if (isset($_POST['submit-product']) && !empty($_POST['name']) && !empty($_POST['category']) && !empty($_POST['price'])) {
+        $name = $_POST['name'];
+        $category = ($_POST['category']);
+        $price = $_POST['price'];
         $imgLink =  getImg('img');
 
-        if (isset($_POST['description'])) 
-            $description = userInput($_POST['description']);
-        else 
+        if (isset($_POST['description']))
+            $description = $_POST['description'];
+        else
             $description = '';
 
         addProduct($name, $description, $price, $category, $imgLink);
@@ -253,7 +279,8 @@ function stockAddPage() {
     header("location: /admin/stock");
 }
 
-function renderLayout($title, $path, $post = []) {
+function renderLayout($title, $path, $post = [])
+{
     return renderTemplateHTML("views/layout.php", [
         'title' => $title,
         'isAdmin' => isset($_SESSION['admin']),
@@ -261,7 +288,8 @@ function renderLayout($title, $path, $post = []) {
     ]);
 }
 
-function renderTemplateHTML($template, $post = []) {
+function renderTemplateHTML($template, $post = [])
+{
     extract($post);
 
     ob_start();

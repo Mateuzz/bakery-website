@@ -8,7 +8,7 @@ foreach ($cart_items as $cartItem) {
     $totalPrice = $data['price'] * $qtd;
     $totalPrice = sprintf("%.2f", $totalPrice);
 
-    echo <<< _EOF
+    echo <<< HTML
 
     <div class="cart-item-card">
         <div> <a href="/cart?remove-item-id={$data['pk_id']}" class="remove" aria-label="remove-cart-item">X</a> </div>
@@ -40,7 +40,7 @@ foreach ($cart_items as $cartItem) {
         </div>
     </div>
 
-    _EOF;
+    HTML;
 }
 
 $cartItemsHtml = ob_get_clean();

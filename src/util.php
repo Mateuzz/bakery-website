@@ -1,22 +1,5 @@
 <?php
 
-function emptyAny($post, $keys) {
-    foreach ($keys as $key) {
-        if (empty($post[$key])) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function isUnsetAny($post, $keys) {
-    foreach ($keys as $key) {
-        if (!isset($post[$key]))
-            return true;
-    }
-    return false;
-}
-
 function escapeDir($path) {
     return strtolower(preg_replace("[^A-Za-z0-9]", "", $path));
 }

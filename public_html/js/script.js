@@ -14,6 +14,13 @@ function disable(item) {
     item.setAttribute('data-state', 'disabled')
 }
 
+function toggle(item) {
+    if (item.getAttribute('data-state') != 'enabled')
+        item.setAttribute('data-state', 'enabled')
+    else
+        item.setAttribute('data-state', 'disabled')
+}
+
 function getUrlAnchor() {
     const anchor = document.location.hash
     return anchor.replace(/\?.*/, "")
@@ -132,6 +139,8 @@ function signupPage() {
     const tel = form.querySelector("#telephone")
     const pass = form.querySelector('#password')
     const passConfirm = form.querySelector('#password-confirm')
+    const fields = [name, email, birth, tel, pass, passConfirm]
+
     let checkForExistingUserInterval = null
 
     function setValidityMessage(element, msg, type) {
@@ -143,7 +152,7 @@ function signupPage() {
         }
     }
 
-    function onErrorValidate(element, validateCallback, extraArgs) {
+    function checkFieldError(element, validateCallback, extraArgs) {
         const error = validateCallback(element.value, extraArgs)
         if (error) {
             setValidityMessage(element, error, 'error')
@@ -155,60 +164,53 @@ function signupPage() {
         return error
     }
 
-    function emailOnInputValidate() {
-        email.removeAttribute('data-validating')
+    function checkEmailOnInputError() {
+        email.removeAttribute('data-valid-special')
 
         if (checkForExistingUserInterval) {
             clearTimeout(checkForExistingUserInterval)
             checkForExistingUserInterval = null
         }
 
-        if (onErrorValidate(email, emailError))
+        if (checkFieldError(email, emailError))
             return
 
         email.setCustomValidity(' ')
         email.setAttribute('data-valid-special', 'validating')
 
         checkForExistingUserInterval = setTimeout(async () => {
+            email.removeAttribute('data-valid-special')
             if (!(await isEmailAvailable(email.value))) {
-                email.setAttribute('data-valid-special', 'taken')
                 setValidityMessage(email, "Email already taken", 'error')
             } else {
-                email.setAttribute('data-valid-special', 'valid')
                 email.setCustomValidity('')
                 setValidityMessage(email, "Email is available", 'msg')
             }
         }, 750);
     }
 
-    function emailOnSubmitValidate() {
-        const oldState = email.getAttribute('data-valid-special')
-        if (oldState == 'validating' || oldState == 'taken') {
-            email.setCustomValidity(' ')
-            return true
-        }
-        return onErrorValidate(email, emailError)
+    // for email we don' repeat async request again on submit
+    function checkEmailOnSubmitError() {
+        return email.validity.customError || checkFieldError(email, emailError)
     }
 
-    const fields = [name, email, birth, tel, pass, passConfirm]
-
-    name.oninput = () => onErrorValidate(name, nameError)
-    tel.oninput = () => onErrorValidate(tel, telError)
-    birth.oninput = () => onErrorValidate(birth, birthError)
-    pass.oninput = () => onErrorValidate(password, passError)
-    passConfirm.oninput = () => onErrorValidate(passConfirm, confirmPassError, pass.value)
-    email.oninput = emailOnInputValidate
+    name.oninput = () => checkFieldError(name, nameError)
+    tel.oninput = () => checkFieldError(tel, telError)
+    birth.oninput = () => checkFieldError(birth, birthError)
+    pass.oninput = () => checkFieldError(password, passError)
+    passConfirm.oninput = () => checkFieldError(passConfirm, confirmPassError, pass.value)
+    email.oninput = checkEmailOnInputError
 
     for (const f of fields) 
-        f.onsubmit = f.oninput
+        f.submitCheckError = f.oninput
 
-    email.onsubmit = emailOnSubmitValidate
+    email.submitCheckError = checkEmailOnSubmitError
 
     form.onsubmit = e => {
         let firstError = null
 
         for (const field of fields) {
-            if (field.onsubmit() && !firstError)
+            if (field.submitCheckError() && !firstError)
                 firstError = field
         }
 
@@ -361,18 +363,6 @@ function stockPage() {
             window.scrollTo(0, 0);
         }
 
-        function showProductNewImage() {
-            const file = stockChangeImage.files[0]
-            if (imagesTypes.includes(file.type)) {
-                const url = URL.createObjectURL(file)
-                productImg.src = url
-            } else {
-                alert("File uploaded is not a image")
-            }
-        }
-
-        const stockChangeImage = value.querySelector('.products-stock-change-image input')
-
         const imagesTypes = [
             "image/apng",
             "image/bmp",
@@ -386,25 +376,20 @@ function stockPage() {
             "image/x-icon",
         ]
 
-        stockChangeImage.onchange = showProductNewImage
-    })
-}
-
-function menuStockPage() {
-    const hideTypeList = $('#hide-menu-type-list')
-    const typeList = $('.aside-nav')
-
-    if (hideTypeList) {
-        hideTypeList.onclick = () => {
-            const display = getComputedStyle(typeList).display
-
-            if (display != 'none') {
-                typeList.style.display = 'none'
+        function showProductNewImage() {
+            const file = stockChangeImage.files[0]
+            if (imagesTypes.includes(file.type)) {
+                const url = URL.createObjectURL(file)
+                productImg.src = url
             } else {
-                typeList.style.display = 'block'
+                alert("File uploaded is not a image")
             }
         }
-    }
+
+        const stockChangeImage = value.querySelector('.products-stock-change-image input')
+
+        stockChangeImage.onchange = showProductNewImage
+    })
 }
 
 function sideWide() {
@@ -420,10 +405,18 @@ function sideWide() {
                 lw.classList.remove('loading-wheel-wrapper')
             })
     }
+
+    const toggleItemButtons = $all('.toggle-item-button')
+
+    toggleItemButtons.forEach(button => {
+        const id = button.getAttribute('data-toggle-for')
+        const item = $(`#${id}`)
+        console.log(id, item)
+        button.onclick = () => toggle(item)
+    })
 }
 
 
-menuStockPage()
 stockPage()
 menuPage()
 cartPage()

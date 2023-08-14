@@ -49,13 +49,13 @@ function getProductsHtml($products, $categories) {
 
         $selectCategoriesHtml = getSelectCategoriesEditHtml($id, $categoryProduct, $categories);
 
-        echo <<< _EOF
+        echo <<< HTML
 
         <div class="product-stock-card light-card basic-form form-card" data-state='disabled-show' data-id="$id">
             <form action="stock/edit" method="post" enctype="multipart/form-data" class="product-card-info ut-flow">
 
             <label for="img_$id" class="products-stock-change-image-label loading-wheel-wrapper">
-                <img loading="lazy" src="$imgUrl">
+                <img loading="lazy" src="$imgUrl" alt="$name">
             </label>
 
             <div class="products-stock-change-image">
@@ -97,23 +97,20 @@ function getProductsHtml($products, $categories) {
             </form>
         </div>
 
-        _EOF;
+        HTML;
 
     }
 
     return ob_get_clean();
 }
 
-
 $productsHtml = getProductsHtml($productsAllItems, $categories);
-
 $categoriesSelectOptions = getSelectCategoriesAddHtml($categories);
 
 ?>
 
-
 <main class="stock-main main-items-page">
-    <aside class="aside-nav light-card stock-actions-aside">
+    <aside class="aside-nav light-card stock-actions-aside" id="stock-actions" data-state='enabled'>
         <div id="stock-actions-buttons" class="ut-flow">
             <h2>Ações</h2>
             <ul class="">
@@ -180,7 +177,7 @@ $categoriesSelectOptions = getSelectCategoriesAddHtml($categories);
             </div>
         </form>
     </aside>
-       <button id="hide-menu-type-list" arial-label="hide-aside-actions"></button>
+       <button id="hide-menu-type-list" class="toggle-item-button" data-toggle-for="stock-actions" arial-label="hide-aside-actions"></button>
 
     <article class="menu-list">
 

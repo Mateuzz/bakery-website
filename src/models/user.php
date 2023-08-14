@@ -4,10 +4,12 @@ require_once 'util.php';
 require_once "db.php";
 
 function getUser($email) {
+    $email = strtolower($email);
     return selectOneDB('bakery', 'users', 'email', $email);
 }
 
 function userLogin($email, $password) {
+    $email = strtolower($email);
     $userRow = getUser($email);
 
     if ($userRow && password_verify($password, $userRow['password']))
@@ -91,6 +93,7 @@ function formatTelephoneNumber($telephoneFields) {
 }
 
 function addUser($name, $email, $tel, $birth, $pass) {
+    $email = strtolower($email);
     return insertIgnoreDB('bakery', 'users',
         ['name', 'email', 'telephone', 'birth', 'password'],
         [$name, $email, $tel, $birth, password_hash($pass, PASSWORD_DEFAULT)]
@@ -98,6 +101,7 @@ function addUser($name, $email, $tel, $birth, $pass) {
 }
 
 function createAdmin($name, $email, $tel, $birth, $pass) {
+    $email = strtolower($email);
     return insertIgnoreDB('bakery', 'users',
         ['name', 'email', 'telephone', 'birth', 'password', 'flag'],
         [$name, $email, $tel, $birth, password_hash($pass, PASSWORD_DEFAULT), 'admin']
@@ -105,6 +109,7 @@ function createAdmin($name, $email, $tel, $birth, $pass) {
 }
 
 function userSignup($name, $email, $birth, $tel, $password) {
+    $email = strtolower($email);
     $errors = [];
 
     validateName($name, $errors);

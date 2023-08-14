@@ -25,7 +25,7 @@ foreach ($menuAllItems as $product) {
     $stock = $product['stock'];
     $categoryId = $product['category'];
 
-    echo<<<_EOF
+    echo<<<HTML
 
     <div class="product-menu-card light-card ut-flow" data-category-id="$categoryId" data-state="disabled">
     <div class="loading-wheel-wrapper">
@@ -46,7 +46,7 @@ foreach ($menuAllItems as $product) {
        </form>
     </div>
 
-    _EOF;
+    HTML;
 }
 
 $menuItemsHtml = ob_get_clean();

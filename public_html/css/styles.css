@@ -1059,7 +1059,7 @@ input:valid ~ .form-validity-message {
     width: 60px;
     height: 60px;
     position: absolute;
-    border: 8px solid var(--bd-darker);
+    border: 8px solid var(--bg-super-light);
     top: 50%;
     left: 50%;
     margin-top: -30px;

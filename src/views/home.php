@@ -5,7 +5,7 @@ ob_start();
 foreach ($categories as $category) {
     $name = $category['name'];
     $imgUrl = $category['img_url'];
-    echo <<< _EOF
+    echo <<< HTML
 
     <div class="loading-wheel-wrapper">
         <div class="pretty-card pretty-card-image">
@@ -14,7 +14,7 @@ foreach ($categories as $category) {
         <img loading="lazy" src="$imgUrl" alt="$name"/> 
     </div>
 
-    _EOF;
+    HTML;
 
 }
 
