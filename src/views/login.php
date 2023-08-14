@@ -33,7 +33,7 @@ echo <<< HTML
 
             $messagesHtml
 
-            <div>
+            <div class="form-group">
                 <label for="email">Email</label>
 
                 <input value="$email" pattern="^[\w\.]+@[\w]+\.[\w]+$" type="email" 
@@ -42,7 +42,7 @@ echo <<< HTML
                 <span class="validity-symbol" aria-hidden="true"></span>
             </div>
 
-            <div>
+            <div class="form-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" name="password" minlength="8" placeholder="************" required>
                 <span class="validity-symbol" aria-hidden="true"></span>

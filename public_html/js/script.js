@@ -27,105 +27,181 @@ function getUrlAnchor() {
 }
 
 
+
+
 /* ************************************/
-/*             Login
+/*             Signup
 /***************************************/
 
-function nameError(name) {
-    if (!name)
-        return "Username is required"
-    len = name.length
-    if (len < 3 || len > 60) {
-        return "Name must have between 3 and 60 characters"
-    }
-    if (/[^\w\s]/.test(name)) {
-        return "Name can't have special characters"
-    }
-    return ""
-}
-
-function emailError(email) {
-    if (!email)
-        return "Email is required"
-
-    if (email.length > 60)
-        return "Email must have not more than 60 characters"
-
-    if (!/^[\w\.]+@[\w]+\.[\w]+$/.test(email))
-        return "Email must be valid email"
-    return ""
-}
-
-function birthError(date) {
-    if (!date)
-        return "Birth Date is required"
-
-    const dateRegex = /^([\d]{1,4})-([\d]{1,2})-([\d]{1,2})$/
-    console.log(date)
-    const match = date.match(dateRegex)
-    if (!match) {
-        return "Invalid date format"
-    }
-
-    const year = match[1]
-    const month = match[2]
-    const day = match[3]
-
-    if (isNaN(year) || isNaN(month) || isNaN(day) || month < 1 || month > 12 || day < 1 || day > 31) {
-        return "Invalid date format"
-    }
-    return ""
-}
-
-function telError(tel, matches) {
-    if (!tel)
-        return "Telephone is required"
-
-    const teleRegex = /^([0-9]{2}|\([0-9]{2}\))[\s]*([0-9]{4,5})[\s]*-?[\s]*([0-9]{4})$/;
-
-    if (tel.length > 40)
-        return "Telephone must have not more than 40 characters"
-
-    const match = teleRegex.test(tel)
-    if (!match)
-        return "Telephone must have the format (ddd) xxxx xxxx"
-
-    return ""
-}
-
-function passError(pass) {
-    if (!pass)
-        return "Password is required"
-
-    if (pass.length < 8)
-        return "Password must have at least 8 characters"
-
-    if (!/[a-z]/.test(pass) || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass))
-        return "Password must have uppercase, lowercase, and numbers"
-
-    return ""
-}
-
-function confirmPassError(confirmPass, originalPass) {
-    if (confirmPass != originalPass)
-        return "Passwords must be equal"
-    return ""
+const AvailableStatus = {
+    Available: Symbol("Available"),
+    Unavailable: Symbol("Unavailable"),
+    Unknown: Symbol("Available"),
 }
 
 async function isEmailAvailable(email) {
+    // return AvailableStatus.Unknown
     email = email.toLowerCase()
 
     try {
         const response = await fetch(`http://localhost/user/api?get_user=&email=${email}`)
         if (!response.ok)
-            return false
+            throw new Error("Server Request failed")
+
         const text = await response.text()
-        if (text == "not found")
-            return true
-        return false
+        if (text == "")
+            return AvailableStatus.Available
+        else
+            return AvailableStatus.Unavailable
     } catch (e) {
-        return true
+        return AvailableStatus.Unknown
     }
+}
+
+function basicValidation(field, {fieldName, rule}) {
+    const value = field.value
+    const len = value.length;
+
+    let max = Infinity
+    let min = 0
+    let patterns = []
+    let antiPatterns = []
+    let customMsg = `${fieldName} must be a valid ${fieldName}`
+    const required = field.getAttribute('required')
+
+    if (rule['max'])
+        max = rule['max']
+    if (rule['min'])
+        min = rule['min']
+    if (rule['patterns'])
+        patterns = rule['patterns']
+    if (rule['antiPatterns'])
+        antiPatterns = rule['antiPatterns']
+    if (rule['msg'])
+        customMsg = rule['msg']
+
+    if (len == 0 && required === '')
+        return `${fieldName} is required`
+
+    if (len < min)
+        return `${fieldName} must have at least ${min} characters`;
+    if (len > max)
+        return `${fieldName} must have at most ${max} characters`;
+
+    for (const pattern of Object.values(patterns)) {
+        if (!pattern.test(value)) {
+            return customMsg
+        }
+    }
+
+    for (const antiPattern of Object.values(antiPatterns)) {
+        if (antiPattern.test(value)) {
+            return customMsg
+        }
+    }
+
+    return ""
+}
+
+async function fetchValidationRules() {
+    try {
+        const response = await fetch("http://localhost/user/api?get-validation-rules=")
+        if (!response.ok) {
+            return false
+        }
+        const json = await response.json()
+        return json
+    } catch (e) {
+        return false
+    }
+}
+
+function stringRulesToRegex(rules) {
+    for (const rule of Object.values(rules)) {
+        const patterns = rule['patterns']
+        const antiPatterns = rule['antiPatterns']
+
+        for (const key in patterns) {
+            patterns[key] = new RegExp(patterns[key])
+        }
+
+        for (const key in antiPatterns) {
+            antiPatterns[key] = new RegExp(antiPatterns[key])
+        }
+    }
+}
+
+let validationMessageBox = ''
+
+// function updateMessageValidationMode() {
+//     let newBox = ''
+
+//     if (document.documentElement.clientWidth > 850) {
+//         newBox = 'dialog' 
+//     } else {
+//         newBox = '.form-validity-message'
+//     }
+
+//     if (newBox == validationMessageBox)
+//         return
+
+//     const groups = $all('.form-group')
+
+//     for (const group of groups) {
+//         const oldMessage = group.querySelector(validationMessageBox)
+//         const newMessage = group.querySelector(newBox)
+
+//         if (validationMessageBox == 'dialog')
+//             oldMessage.open = false
+//         else
+//             newMessage.open = true
+
+//         newMessage.textContent = oldMessage.textContent
+//         oldMessage.textContent = ''
+//     }
+
+//     validationMessageBox = newBox
+// }
+
+if (document.documentElement.clientWidth > 850) {
+    validationMessageBox = 'dialog'
+} else {
+    validationMessageBox = '.form-validity-message'
+}
+
+// window.visualViewport.onresize = updateMessageValidationMode
+
+function setValidityMessage(element, msg) {
+    const msgElement = element.parentElement.querySelector(validationMessageBox)
+
+    if (!msg) {
+        msgElement.textContent = ''
+        msgElement.open = false
+    }
+    else if (msg != msgElement.textContent) {
+        msgElement.textContent = msg + '.'
+        msgElement.open = true
+    }
+}
+
+function setInvalid(element, msg) {
+    setValidityMessage(element, msg)
+    element.setCustomValidity(' ')
+}
+
+function setValid(element, msg) {
+    setValidityMessage(element, msg)
+    element.setCustomValidity('')
+}
+
+function onInputCheckError(element, validateCallback, extraArgs) {
+    const error = validateCallback(element, extraArgs)
+    if (error) {
+        setInvalid(element, error)
+    } else {
+        setValid(element)
+    }
+    return error
 }
 
 function signupPage() {
@@ -133,92 +209,121 @@ function signupPage() {
     if (!form)
         return
 
-    const name = form.querySelector("#name")
-    const email = form.querySelector("#email")
-    const birth = form.querySelector("#birth-date")
-    const tel = form.querySelector("#telephone")
-    const pass = form.querySelector('#password')
-    const passConfirm = form.querySelector('#password-confirm')
-    const fields = [name, email, birth, tel, pass, passConfirm]
-
-    let checkForExistingUserInterval = null
-
-    function setValidityMessage(element, msg, type) {
-        const msgElement = element.parentElement.querySelector('.form-validity-message')
-        if (msg && msg != msgElement.textContent) {
-            msgElement.textContent = msg + '.'
-        } else {
-            msgElement.textContent = ''
-        }
+    const fields = {
+        name: null,
+        email: null,
+        'birth-date': null,
+        telephone: null,
+        password: null,
+        'password-confirm': null
     }
 
-    function checkFieldError(element, validateCallback, extraArgs) {
-        const error = validateCallback(element.value, extraArgs)
-        if (error) {
-            setValidityMessage(element, error, 'error')
-            element.setCustomValidity(' ')
-        } else {
-            element.setCustomValidity('')
-            setValidityMessage(element, '')
-        }
-        return error
-    }
+    for (const id in fields)
+        fields[id] = form.querySelector('#' + id)
 
-    function checkEmailOnInputError() {
-        email.removeAttribute('data-valid-special')
+    const rules = fetchValidationRules()
 
-        if (checkForExistingUserInterval) {
-            clearTimeout(checkForExistingUserInterval)
-            checkForExistingUserInterval = null
-        }
+    rules.then(rules => {
+        stringRulesToRegex(rules)
 
-        if (checkFieldError(email, emailError))
-            return
+        for (const id in fields) {
+            // these have exceptional rules
+            if (id == 'email' || id == 'password-confirm')
+                continue
 
-        email.setCustomValidity(' ')
-        email.setAttribute('data-valid-special', 'validating')
+            const rule = rules[id]
 
-        checkForExistingUserInterval = setTimeout(async () => {
-            email.removeAttribute('data-valid-special')
-            if (!(await isEmailAvailable(email.value))) {
-                setValidityMessage(email, "Email already taken", 'error')
-            } else {
-                email.setCustomValidity('')
-                setValidityMessage(email, "Email is available", 'msg')
+            if (rule) {
+                const fieldName = id[0].toUpperCase(0) + id.substring(1)
+                fields[id].oninput = () => onInputCheckError(fields[id], basicValidation, {
+                    fieldName: fieldName,
+                    rule: rule
+                })
+
+                fields[id].onSubmitCheckError = fields[id].oninput
             }
-        }, 750);
-    }
-
-    // for email we don' repeat async request again on submit
-    function checkEmailOnSubmitError() {
-        return email.validity.customError || checkFieldError(email, emailError)
-    }
-
-    name.oninput = () => checkFieldError(name, nameError)
-    tel.oninput = () => checkFieldError(tel, telError)
-    birth.oninput = () => checkFieldError(birth, birthError)
-    pass.oninput = () => checkFieldError(password, passError)
-    passConfirm.oninput = () => checkFieldError(passConfirm, confirmPassError, pass.value)
-    email.oninput = checkEmailOnInputError
-
-    for (const f of fields) 
-        f.submitCheckError = f.oninput
-
-    email.submitCheckError = checkEmailOnSubmitError
-
-    form.onsubmit = e => {
-        let firstError = null
-
-        for (const field of fields) {
-            if (field.submitCheckError() && !firstError)
-                firstError = field
         }
 
-        if (firstError) {
-            firstError.focus()
-            e.preventDefault()
+        const emailRule = rules['email']
+        const email = fields['email']
+
+        let validatingTimeoutId = null
+
+        if (emailRule && email) {
+            email.oninput = () => {
+                email.removeAttribute('data-valid-special')
+
+                if (validatingTimeoutId) {
+                    clearTimeout(validatingTimeoutId)
+                    validatingTimeoutId = null
+                }
+
+                if (onInputCheckError(email, basicValidation, {
+                    fieldName: 'Email',
+                    rule: emailRule
+                }))
+                    return
+
+                email.setCustomValidity(' ')
+                email.setAttribute('data-valid-special', 'validating')
+
+                setValidityMessage(email, "Waiting for server confirm email availability")
+
+                validatingTimeoutId = setTimeout(async () => {
+                    const status = await isEmailAvailable(email.value)
+
+                    switch (status) {
+                    case AvailableStatus.Unavailable:
+                        email.removeAttribute('data-valid-special')
+                        setInvalid(email, "Email already taken")
+                        break;
+
+                    case AvailableStatus.Available:
+                        email.removeAttribute('data-valid-special')
+                        setValid(email, "Email is available")
+                        break;
+
+                    case AvailableStatus.Unknown:
+                        email.setAttribute('data-valid-special', 'unknown')
+                        setValid(email, "Server not responding: Email may not be available")
+                        break;
+                    }
+                }, 1500);
+            }
+
+            email.onSubmitCheckError = () => {
+                return email.validity.customError ||
+                    onInputCheckError(email, basicValidation, {
+                        fieldName: 'Email',
+                        rule: emailRule
+                    })
+            }
         }
-    }
+
+        const passConfirm = fields['password-confirm']
+        passConfirm.oninput = () => {
+            return onInputCheckError(passConfirm, () => {
+                if (passConfirm.value != fields['password'].value)
+                    return "Passwords do not match"
+                return ""
+            })
+        }
+        passConfirm.onSubmitCheckError = passConfirm.oninput
+
+        form.onsubmit = e => {
+            let firstError = null
+
+            for (const field of Object.values(fields)) {
+                if (field.onSubmitCheckError() && !firstError)
+                    firstError = field
+            }
+
+            if (firstError) {
+                firstError.focus()
+                e.preventDefault()
+            }
+        }
+    })
 }
 
 
@@ -397,12 +502,15 @@ function sideWide() {
 
     for (const lw of loadingWrapper) {
         const img = lw.querySelector('img')
-        const wheel = lw.querySelector('.loading-wheel')
         if (img.complete)
-            lw.classList.remove('loading-wheel-wrapper')
+            setTimeout(() => {
+                lw.classList.remove('loading-wheel-wrapper')
+            }, 1000);
         else
             img.addEventListener('load', () => {
-                lw.classList.remove('loading-wheel-wrapper')
+                setTimeout(() => {
+                    lw.classList.remove('loading-wheel-wrapper')
+                }, 1000);
             })
     }
 
@@ -410,8 +518,7 @@ function sideWide() {
 
     toggleItemButtons.forEach(button => {
         const id = button.getAttribute('data-toggle-for')
-        const item = $(`#${id}`)
-        console.log(id, item)
+        const item = $('#' + id)
         button.onclick = () => toggle(item)
     })
 }

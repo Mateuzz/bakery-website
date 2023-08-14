@@ -119,9 +119,7 @@ function loginPage()
 
     $post = [];
     if (isset($_GET['account_created'])) {
-        $post = [
-            'createdAccountMessage' => 'Your Account was created, you can login now'
-        ];
+        $post['createdAccountMessage'] ='Your Account was created, you can login now';
     }
 
     return renderLayout("Login" . TITLE_SUFFIX, "views/login.php", $post);
@@ -130,15 +128,21 @@ function loginPage()
 function userApi()
 {
     if (isset($_GET['get_user']) && !empty($_GET['email'])) {
-        $email = strtolower($_GET['email']);
+        $email = $_GET['email'];
         $userRow = getUser($email);
 
         if ($userRow) {
             return $userRow['name'];
+        } else {
+            return "";
         }
     }
 
-    return "not found";
+    if (isset($_GET['get-validation-rules'])) {
+        return json_encode(getFieldValidateRules());
+    }
+
+    http_response_code(404);
 }
 
 function signupPage()
@@ -223,12 +227,11 @@ function stockEditPage()
     if (isset($_POST['submit']) && isset($_POST['description']) && !empty($_POST['name']) && 
             !empty($_POST['id']) && !empty($_POST['category']) && 
             !empty($_POST['price'])) {
-        $id = userInput($_POST['id']);
-        $category = userInput($_POST['category']);
-        $price = userInput($_POST['price']);
-        $name = userInput($_POST['name']);
-        $description = userInput($_POST['description']);
-
+        $id = $_POST['id'];
+        $category = $_POST['category'];
+        $price = $_POST['price'];
+        $name = $_POST['name'];
+        $description = $_POST['description'];
         $img =  getImg('img');
 
         editProduct($id, $name, $description, $price, $category, $img);

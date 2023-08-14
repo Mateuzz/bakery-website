@@ -1,4 +1,3 @@
-
 <footer class="footer">
     <div class="footer-wrapper">
         <nav class="footer-group">

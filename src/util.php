@@ -1,5 +1,8 @@
 <?php
 
+define('IMAGES_FULL_PATH', $_SERVER['DOCUMENT_ROOT'] . '/images/products');
+define('IMAGES_PATH', '/images/products');
+
 function escapeDir($path) {
     return strtolower(preg_replace("[^A-Za-z0-9]", "", $path));
 }
@@ -34,7 +37,7 @@ function getImageExtension($imgPath) {
 
 function getImgLink($img) {
     if ($img) {
-        $imgDir = IMAGES_PATH_MKDIR;
+        $imgDir = IMAGES_FULL_PATH;
         $imgDirLink = IMAGES_PATH;
 
         if (!is_dir($imgDir)) {

@@ -9,7 +9,6 @@ function getUser($email) {
 }
 
 function userLogin($email, $password) {
-    $email = strtolower($email);
     $userRow = getUser($email);
 
     if ($userRow && password_verify($password, $userRow['password']))
@@ -21,7 +20,40 @@ function userLogin($email, $password) {
 
 // Sign up
 
-const TELEPHONE_REGEX = "/^([0-9]{2}|\([0-9]{2}\))[\s]*([0-9]{4,5})[\s]*-?[\s]*([0-9]{4})$/";
+const NAME_ANTI_REGEX = ["[^\w\s]"];
+const EMAIL_REGEX = ["^[\w\.]+@[\w]+\.[\w]+$"];
+const PASSWORD_REGEX = ["[a-z]", "[A-Z]", "[0-9]"];
+const BIRTH_REGEX = ["^([\d]{1,4})-([\d]{1,2})-([\d]{1,2})$"];
+const TELEPHONE_REGEX = ["^([0-9]{2}|\([0-9]{2}\))[\s]*([0-9]{4,5})[\s]*-?[\s]*([0-9]{4})$"];
+
+function getFieldValidateRules() {
+    return [
+        'name' => [
+            'min' => 3,
+            'max' => 60,
+            'antiPatterns' => NAME_ANTI_REGEX,
+            'msg' => "Name must have not special symbols"
+        ],
+        'email' => [
+            'max' =>  60,
+            'patterns' => EMAIL_REGEX,
+            'msg' => "Email must be a valid email"
+        ],
+        'password' => [
+            'min' => 8,
+            'patterns' => PASSWORD_REGEX,
+            'msg' => "Password must contain numbers, lower and upper letters"
+        ],
+        'birth-date' => [
+            'patterns' => BIRTH_REGEX,
+            'msg' => "Date must be a valid date"
+        ],
+        'telephone' => [
+            'patterns' => TELEPHONE_REGEX,
+            'msg' => "Telephone must follow the format: (dd) xxxx xxxx"
+        ]
+    ];
+}
 
 function validateName($name, &$errors) {
     if (!$name)
@@ -58,11 +90,13 @@ function validateBirthDate($date, &$errors) {
 
 function validateTelephone($tel, &$errors) {
     if (!$tel)
-        $errors[] = "Null tel number";
+        $errors[] = "Telephone is required";
+
+    $regex = '/' . TELEPHONE_REGEX[0] . '/';
 
     if (strlen($tel) > 40)
         $errors[] = "Telephone must have not more than 40 characters";
-    if (!preg_match(TELEPHONE_REGEX, $tel, $matches)) 
+    if (!preg_match($regex, $tel, $matches)) 
         $errors[] = "Telephone must be a valid number";
 
     return [
@@ -106,6 +140,7 @@ function createAdmin($name, $email, $tel, $birth, $pass) {
         ['name', 'email', 'telephone', 'birth', 'password', 'flag'],
         [$name, $email, $tel, $birth, password_hash($pass, PASSWORD_DEFAULT), 'admin']
     );
+
 }
 
 function userSignup($name, $email, $birth, $tel, $password) {

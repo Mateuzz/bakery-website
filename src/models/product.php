@@ -3,9 +3,6 @@
 require_once 'db.php';
 require_once 'util.php';
 
-define('IMAGES_PATH_MKDIR', '/home/Mateus/archive/apache/root/public_html/images/products');
-define('IMAGES_PATH', '/images/products');
-
 function getProduct($id) {
     return selectOneDB('bakery', 'products', 'pk_id', $id);
 }

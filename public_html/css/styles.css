@@ -15,7 +15,7 @@
     --button-link-hover: #fffdc0;
     --bg-input: #eed8a0;
     --bg-input-focus: #ffd880;
-    --red-invalid-symbol: #e08420;
+    --green-valid-input: var(--link-blue-stronger);
     --red-invalid-input: #f05400;
     --button-link-hover-box-shadow: #ffad70;
     --grey-yellow-light: #dbcfa7;
@@ -281,28 +281,70 @@ textarea {
     right: 0;
 }
 
-.basic-form .validity-symbol {
+.form-group {
+    --validity-color: var(--red-invalid-input);
+}
+
+.validity-symbol {
     position: relative;
     left: 0.3em;
     font-size: 1.7em;
 }
 
-.basic-form *:invalid + .validity-symbol::after {
+.validity-symbol::after {
+    position: absolute;
+    color: var(--validity-color);
+}
+
+*:invalid + .validity-symbol::after {
     content: "x";
-    color: var(--red-invalid-symbol);
-    position: absolute;
 }
 
-.basic-form *:valid + .validity-symbol::after {
+.form-group:has(:valid) {
+    --validity-color: var(--link-blue-stronger);
+}
+
+*:valid + .validity-symbol::after {
     content: "✓";
-    color: green;
-    position: absolute;
 }
 
-.basic-form [data-valid-special='validating'] + .validity-symbol::after {
+.form-group:has([data-valid-special='validating']) {
+    --validity-color: gold;
+}
+
+[data-valid-special='validating'] + .validity-symbol::after {
     content: "!";
-    color: yellow;
+    animation: loading 0.8s linear forwards infinite
+}
+
+@keyframes jumping {
+    0% { font-size: 1em; }
+    50% { font-size: 1.1em; }
+    100% { font-size: 1em; }
+}
+
+.form-group:has([data-valid-special='unknown']) {
+    --validity-color: gold;
+}
+
+[data-valid-special='unknown'] + .validity-symbol::after {
+    content: "?";
+    animation: jumping 0.8s ease-in-out forwards infinite;
+}
+
+.validity-symbol dialog {
+    opacity: 0.0;
     position: absolute;
+    color: var(--bg-default);
+    top: -2.5em;
+    left: 10px;
+    white-space: nowrap;
+    background-color: var(--validity-color);
+    border-radius: 1em;
+    border: 3px solid var(--bg-default);
+    opacity: 0.9;
+    font-size: 14px;
+    padding: 0.5em 1em;
 }
 
 .basic-form .button-link {
@@ -691,14 +733,7 @@ input:-webkit-autofill {
 
 .form-validity-message {
     margin-top: 6px;
-}
-
-input:invalid ~ .form-validity-message {
-    color: var(--red-invalid-input);
-}
-
-input:valid ~ .form-validity-message {
-    color: #83ff48;
+    color: var(--validity-color)
 }
 
 
@@ -793,7 +828,7 @@ input:valid ~ .form-validity-message {
 }
 
 .cart-item-card .remove {
-    color: var(--red-invalid-symbol);
+    color: var(--red-invalid-input);
     background-color: transparent;
     border: 0;
     position: absolute;
