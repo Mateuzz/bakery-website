@@ -12,12 +12,12 @@ if (isset($signupErrors)) {
     }
 }
 
-foreach ([$name, $email, $birth, $tel] as $var) {
+$errorsHtml = ob_get_clean();
+
+foreach (['name', 'tel', 'birth', 'email'] as $var) {
     if (!isset($$var))
         $$var = "";
 }
-
-$errorsHtml = ob_get_clean();
 
 echo <<< HTML
 <main class="main-card-page">

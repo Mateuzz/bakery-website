@@ -1,0 +1,25 @@
+{
+  "name": "bakery",
+  "version": "1.0.0",
+  "description": "A Simple bakery website which server dynamic content using PHP, Apache and Mysql.\n Includes menu and cart pages, a login system with custom form validation, and a admin page with enables\n adding new content to the website",
+  "private": "true",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node esbuild.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Mateuzz/bakery-website.git"
+  },
+  "author": "Mateus Freitas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mateuzz/bakery-website/issues"
+  },
+  "homepage": "https://github.com/Mateuzz/bakery-website#readme",
+  "devDependencies": {
+    "esbuild": "^0.19.2",
+    "esbuild-plugin-php-manifest": "^1.0.0"
+  }
+}

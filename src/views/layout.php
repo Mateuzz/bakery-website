@@ -12,13 +12,12 @@
     <meta name="author" content="Mateus Freitas">
     <meta name="description" 
           content="This Bakery website is a learning project which presents dynamic page content">
-
-    <link rel="stylesheet" href="/css/styles.css">
     
     <!-- <link rel="preload" href="/fonts/KingThings/kingthings_foundation-webfont.woff2" as="font" type="font/woff2"> -->
     <!-- <link rel="preload" href="/images/icons/McKayIcon.png" as="image" type="image/png"> -->
 
-    <script src="/js/script.js" defer></script>
+    <link rel="stylesheet" href="<?= $css ?>">
+    <script src="<?= $script ?>" defer type="module"></script>
 
     <title> <?= $title ?> </title>
 </head>
@@ -28,7 +27,7 @@
 <?php
     require "header.php";
 
-    echo $content;
+    require $mainTemplate;
 
     require "footer.php";
 ?>

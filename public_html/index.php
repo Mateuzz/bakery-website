@@ -1,7 +1,7 @@
 <?php
 
-/* ini_set("display_errors", true); */
-/* error_reporting(E_ALL); */
+ini_set("display_errors", true);
+error_reporting(E_ALL);
 
 require 'controllers/controllers.php';
 
@@ -24,17 +24,12 @@ const CONTROLLERS_PATH = [
     "/admin/stock/add" => "stockAddPage",
 ];
 
-
-try {
-    if (isset(CONTROLLERS_PATH[$path])) {
-        session_start();
-        $controller = CONTROLLERS_PATH[$path];
-        echo $controller($path);
-    } else {
-        http_response_code(404);
-    }
-} catch (Error) {
-    http_response_code(500);
+if (isset(CONTROLLERS_PATH[$path])) {
+    session_start();
+    $controller = CONTROLLERS_PATH[$path];
+    echo $controller($path);
+} else {
+    http_response_code(404);
 }
 
 

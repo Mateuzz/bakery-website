@@ -3,8 +3,9 @@
 require 'models/user.php';
 require 'models/product.php';
 require_once 'util.php';
+require 'config/assets.php';
 
-const TITLE_SUFFIX = " | Mckay's Bakery";
+const PAGE_TITLE_SUFFIX = " | Mckay's Bakery";
 
 function startUserSession($userRow)
 {
@@ -53,7 +54,7 @@ function loginSubmit()
         exit();
     }
 
-    return renderLayout("Login" . TITLE_SUFFIX, "views/login.php", [
+    return renderLayout("Login", "views/login.php", [
         'loginErrors' => ['Invalid Credentials.'],
         'email' => htmlspecialchars($email),
     ]);
@@ -70,13 +71,13 @@ function signupSubmit()
     $errors = userSignup($name, $email, $birth, $tel, $password);
 
     if ($errors) {
-        return renderLayout('Cadastrar' . TITLE_SUFFIX, "views/signup.php", [
+        return renderLayout('Cadastrar' . PAGE_TITLE_SUFFIX, "views/signup.php", [
             'signupErrors' => $errors,
             'name' => htmlspecialchars($name),
             'email' => htmlspecialchars($email),
             'birth' => htmlspecialchars($birth),
             'tel' => htmlspecialchars($tel),
-        ]);
+        ], 'signup');
     }
 
     header("location: /user/login?account_created=true");
@@ -97,7 +98,7 @@ function loggedPage()
         'email' => htmlspecialchars($_SESSION['email']),
     ];
 
-    return renderLayout('Logado' . TITLE_SUFFIX, 'views/logged.php', $info);
+    return renderLayout('Logado' . PAGE_TITLE_SUFFIX, 'views/logged.php', $info);
 }
 
 function logoutPage()
@@ -117,12 +118,14 @@ function loginPage()
         return loginSubmit();
     }
 
-    $post = [];
+    $post = [
+    ];
+
     if (isset($_GET['account_created'])) {
         $post['createdAccountMessage'] ='Your Account was created, you can login now';
     }
 
-    return renderLayout("Login" . TITLE_SUFFIX, "views/login.php", $post);
+    return renderLayout("Login", "views/login.php", $post);
 }
 
 function userApi()
@@ -156,24 +159,24 @@ function signupPage()
         return signupSubmit();
     }
 
-    return renderLayout("Cadastrar" . TITLE_SUFFIX, "views/signup.php");
+    return renderLayout("Cadastrar", "views/signup.php", [], 'signup');
 }
 
 function homePage()
 {
-    return renderLayout("Inicio" . TITLE_SUFFIX, "views/home.php", [
+    return renderLayout("Inicio", "views/home.php", [
         'categories' => categoriesGetAll(),
     ]);
 }
 
 function aboutPage()
 {
-    return renderLayout("Sobre" . TITLE_SUFFIX, "views/about.php");
+    return renderLayout("Sobre", "views/about.php");
 }
 
 function contactPage()
 {
-    return renderLayout("Contate-nos" . TITLE_SUFFIX, "views/contact.php");
+    return renderLayout("Contate-nos", "views/contact.php");
 }
 
 function cartPage()
@@ -191,17 +194,17 @@ function cartPage()
         unset($_SESSION['cart_items'][$itemId]);
     }
 
-    return renderLayout("Meu Carrinho" . TITLE_SUFFIX, "views/cart.php", [
-        'cart_items' => $_SESSION['cart_items']
-    ]);
+    return renderLayout("Meu Carrinho", "views/cart.php", [
+        'cart_items' => $_SESSION['cart_items'],
+    ], 'cart');
 }
 
 function menuPage()
 {
-    return renderLayout("Menu" . TITLE_SUFFIX, "views/menu.php", [
+    return renderLayout("Menu", "views/menu.php", [
         'menuAllItems' => productsGetAll(),
-        'categories' => categoriesGetAll()
-    ]);
+        'categories' => categoriesGetAll(),
+    ], 'menu');
 }
 
 function stockControlPage()
@@ -211,10 +214,10 @@ function stockControlPage()
         return "";
     }
 
-    return renderLayout('Estoque' . TITLE_SUFFIX, "views/stock.php", [
+    return renderLayout('Estoque', "views/stock.php", [
         'productsAllItems' => productsGetAll(),
-        'categories' => categoriesGetAll()
-    ]);
+        'categories' => categoriesGetAll(),
+    ], 'stock');
 }
 
 function stockEditPage()
@@ -282,13 +285,14 @@ function stockAddPage()
     header("location: /admin/stock");
 }
 
-function renderLayout($title, $path, $post = [])
+function renderLayout($title, $template, $post = [], $assetGroup = 'default')
 {
-    return renderTemplateHTML("views/layout.php", [
-        'title' => $title,
-        'isAdmin' => isset($_SESSION['admin']),
-        'content' => renderTemplateHTML($path, $post)
-    ]);
+    $post['title'] = $title . PAGE_TITLE_SUFFIX;
+    $post['isAdmin'] = isset($_SESSION['admin']);
+    $post['mainTemplate'] = $template;
+    $assets = getAssetsByGroup($assetGroup);
+    $post = array_merge($post, $assets);
+    return renderTemplateHTML("views/layout.php", $post);
 }
 
 function renderTemplateHTML($template, $post = [])

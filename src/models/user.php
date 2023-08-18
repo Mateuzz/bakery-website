@@ -20,18 +20,22 @@ function userLogin($email, $password) {
 
 // Sign up
 
-const NAME_ANTI_REGEX = ["[^\w\s]"];
+const NAME_INVALID_REGEX = ["[^\w\s]"];
 const EMAIL_REGEX = ["^[\w\.]+@[\w]+\.[\w]+$"];
 const PASSWORD_REGEX = ["[a-z]", "[A-Z]", "[0-9]"];
 const BIRTH_REGEX = ["^([\d]{1,4})-([\d]{1,2})-([\d]{1,2})$"];
 const TELEPHONE_REGEX = ["^([0-9]{2}|\([0-9]{2}\))[\s]*([0-9]{4,5})[\s]*-?[\s]*([0-9]{4})$"];
+
+function stringToRegex($string) {
+    return '/' + $string + '/';
+}
 
 function getFieldValidateRules() {
     return [
         'name' => [
             'min' => 3,
             'max' => 60,
-            'antiPatterns' => NAME_ANTI_REGEX,
+            'invalidPatterns' => NAME_INVALID_REGEX,
             'msg' => "Name must have not special symbols"
         ],
         'email' => [
@@ -56,23 +60,27 @@ function getFieldValidateRules() {
 }
 
 function validateName($name, &$errors) {
+    $nameInvalid = stringToRegex(NAME_INVALID_REGEX[0]);
+
     if (!$name)
         $errors[] = "Null user";
     $len = strlen($name);
     if ($len < 3 || $len > 60) {
         $errors[] = "Name must have between 3 and 60 characters";
     }
-    if (preg_match("/[^\w\s]/", $name)) {
+    if (preg_match($nameInvalid, $name)) {
         $errors[] = "Name can't have special characters";
     }
 }
 
 function validateEmail($email, &$errors) {
+    $emailValid = stringToRegex(EMAIL_REGEX[0]);
+
     if (!$email)
         $errors[] = "Null email";
     if (strlen($email) > 60)
         $errors[] = "Email must have not more than 60 characters";
-    if (!preg_match("/^[\w]+@[\w]+\.[\w]+$/", $email))
+    if (!preg_match($emailValid, $email))
         $errors[] = "Email must be valid email";
 }
 
@@ -92,11 +100,11 @@ function validateTelephone($tel, &$errors) {
     if (!$tel)
         $errors[] = "Telephone is required";
 
-    $regex = '/' . TELEPHONE_REGEX[0] . '/';
+    $telValid = stringToRegex(TELEPHONE_REGEX[0]);
 
     if (strlen($tel) > 40)
         $errors[] = "Telephone must have not more than 40 characters";
-    if (!preg_match($regex, $tel, $matches)) 
+    if (!preg_match($telValid, $tel, $matches)) 
         $errors[] = "Telephone must be a valid number";
 
     return [
@@ -112,10 +120,12 @@ function validatePassword($pass, &$errors) {
 
     if (strlen($pass) < 8)
         $errors[] = "Password must have at least 8 characters";
-    
-    if (!preg_match("/[a-z]/", $pass) || !preg_match("/[A-Z]/", $pass) || 
-        !preg_match("/[0-9]/", $pass)) {
-        $errors[] = "Password must have uppercase, lowercase, and numbers";
+
+    foreach (PASSWORD_REGEX as $passwordRegex) {
+        if (!preg_match(stringToRegex($passwordRegex), $pass)) {
+            $errors[] = "Password must have uppercase, lowercase, and numbers";
+            break;
+        }
     }
 }
 
