@@ -5,7 +5,7 @@ ob_start();
 function getCategoriesUl($categories) {
     ob_start();
 
-    echo "<ul class=\"ut-flow-row\">\n";
+    echo "<ul class=\"ut-row-nav\">\n";
     foreach ($categories as $category) {
         $id = $category['pk_id'];
         $name = $category['name'];
@@ -28,22 +28,23 @@ foreach ($menuAllItems as $product) {
     echo<<<HTML
 
     <div class="product-menu-card light-card ut-flow" data-category-id="$categoryId" data-state="disabled">
-    <div class="loading-wheel-wrapper">
-       <img loading="lazy" class="ut-widescreen-img" src="$imgUrl" alt="$name">
-    </div>
-       <div class="product-card-info ut-flow">
-           <div class="product-card-title ut-space-between">
-               <h2>$name</h2>
-               <span>R\$$price</span>
+        <div class="loading-wheel-wrapper" data-onload="make-bg-widescreen">
+            <img loading="lazy" src="$imgUrl" height="300px" width="100%" style="object-fit: cover">
+        </div>
+           <div class="product-card-info ut-flow">
+               <div class="product-card-title ut-space-between">
+                   <h2>$name</h2>
+                   <span>R\$$price</span>
+               </div>
+               <p>$description</p>
            </div>
-           <p>$description</p>
-       </div>
-       <form action="/cart" method="post" class="ut-row ut-flow-row">
-           <button type="submit" class="button-link">Comprar</button>
-            <label for="qtd-$id">Quantidade</label>
-           <input type="number" value="1" min="1" name="add-item-qtd" id="qtd_$id"/> 
-           <input type="hidden" value="$id" name="add-item-id">
-       </form>
+
+           <form action="/cart" method="post" class="ut-row ut-flow-row">
+               <button type="submit" class="button-link">Comprar</button>
+                <label for="qtd-$id">Quantidade</label>
+               <input type="number" value="1" min="1" name="add-item-qtd" id="qtd_$id"/> 
+               <input type="hidden" value="$id" name="add-item-id">
+           </form>
     </div>
 
     HTML;

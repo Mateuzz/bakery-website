@@ -177,6 +177,14 @@ textarea {
     padding: 4em 10%;
 }
 
+.ut-widescreen-bg-img {
+    height: 0;
+    padding-top: 60%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
 
 /*-------------------  -----------  ----------------------*/
    /*==================* Site Wide *====================*/
@@ -281,18 +289,26 @@ textarea {
     right: 0;
 }
 
+.basic-form .button-link {
+    font-size: 1.5em;
+    width: 100%;
+}
+
 .form-group {
     --validity-color: var(--red-invalid-input);
 }
 
 .validity-symbol {
     position: relative;
-    left: 0.3em;
+    left: 7px;
     font-size: 1.7em;
 }
 
 .validity-symbol::after {
     position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
     color: var(--validity-color);
 }
 
@@ -300,7 +316,7 @@ textarea {
     content: "x";
 }
 
-.form-group:has(:valid) {
+*:valid ~ .validity-info {
     --validity-color: var(--link-blue-stronger);
 }
 
@@ -308,7 +324,7 @@ textarea {
     content: "✓";
 }
 
-.form-group:has([data-valid-special='validating']) {
+[data-valid-special='validating'] ~ .validity-info {
     --validity-color: gold;
 }
 
@@ -345,11 +361,6 @@ textarea {
     opacity: 0.9;
     font-size: 14px;
     padding: 0.5em 1em;
-}
-
-.basic-form .button-link {
-    font-size: 1.5em;
-    width: 100%;
 }
 
 
@@ -751,16 +762,13 @@ input:-webkit-autofill {
 }
 
 .menu-categories-nav ul {
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
     font-size: 1.4em;
 }
 
 .menu-select-category {
-    width: 100%;
-    min-width: 7em;
+    margin: 0.4em;
     font-weight: normal;
+    min-width: 200px;
 }
 
 .menu-list h1 {
@@ -783,6 +791,7 @@ input:-webkit-autofill {
 .product-menu-card {
     display: flex;
     flex-flow: column;
+    max-width: 40em;
 }
 
 .product-menu-card .button-link {
@@ -844,11 +853,6 @@ input:-webkit-autofill {
     flex: 1 7em;
     max-width: 50%;
     border-radius: 1em;
-}
-
-.ut-widescreen-img {
-    aspect-ratio: 1.6;
-    object-fit: cover;
 }
 
 .cart-item-info {

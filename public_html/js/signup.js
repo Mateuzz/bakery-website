@@ -56,6 +56,7 @@ function basicValidation(field, {fieldName, rule}) {
 
     for (const pattern of Object.values(patterns)) {
         if (!pattern.test(value)) {
+            console.log(pattern)
             return customMsg
         }
     }
@@ -79,12 +80,13 @@ async function fetchValidationRules() {
         return JSON.parse(text, (key, value) => {
             const ps = []
             if (key == 'patterns' || key == 'invalidPatterns') {
-                for (const p of key) {
-                    ps.push(new RegExp(value))
+                for (const p of value) {
+                    ps.push(new RegExp(p))
                 }
             } else {
                 return value
             }
+            console.log(ps)
             return ps
         })
     } catch (e) {
@@ -159,7 +161,6 @@ function signupPage() {
     const rules = fetchValidationRules()
 
     rules.then(rules => {
-        console.log(rules)
         for (const id in fields) {
             // these have exceptional rules
             if (id == 'email' || id == 'password-confirm')

@@ -22,26 +22,48 @@ export function disable(item) {
     item.setAttribute('data-state', 'disabled')
 }
 
-function setLoadingImagesWheel() {
-    const loadingWrapper = $all('.loading-wheel-wrapper')
+function makeBgWideScreenImage(container, img) {
+    container.style.backgroundImage = `url(${img.src})`
+    container.classList.add('ut-widescreen-bg-img')
+    img.remove()
+}
 
-    for (const lw of loadingWrapper) {
-        const img = lw.querySelector('img')
-        if (img.complete)
+function imageRemoveWheelAction(container, img) {
+    if (img.complete)
+        setTimeout(() => { container.classList.remove('loading-wheel-wrapper') }, 400);
+    else
+        img.addEventListener('load', () => {
             setTimeout(() => {
-                lw.classList.remove('loading-wheel-wrapper')
+                container.classList.remove('loading-wheel-wrapper')
             }, 400);
-        else
-            img.addEventListener('load', () => {
-                setTimeout(() => {
-                    lw.classList.remove('loading-wheel-wrapper')
-                }, 400);
-            })
+        })
+}
+
+function imageMakeBgWideScreenAction(container, img) {
+    if (img.complete) {
+        makeBgWideScreenImage(container, img)
+    } else {
+        img.onload = () => makeBgWideScreenImage(container, img)
+    }
+}
+
+function imageHandler() {
+    const imgs = $all('img')
+
+    for (const img of imgs) {
+        const picture = img.parentElement
+    
+        if (picture.classList.contains("loading-wheel-wrapper")) {
+            imageRemoveWheelAction(picture, img)
+        }
+        
+        if (picture.getAttribute('data-onload') == 'make-bg-widescreen') {
+            imageMakeBgWideScreenAction(picture, img)
+        }
     }
 }
 
 function initToggleButtons() {
-
     const toggleItemButtons = $all('.toggle-item-button')
 
     toggleItemButtons.forEach(button => {
@@ -52,5 +74,5 @@ function initToggleButtons() {
 }
 
 
-setLoadingImagesWheel()
+imageHandler()
 initToggleButtons()

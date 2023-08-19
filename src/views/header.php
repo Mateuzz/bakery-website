@@ -20,7 +20,7 @@ $adminLink = ob_get_clean();
                     <li><a href="/">Inicio</a></li>
                     <li><a href="/about">Sobre</a></li>
                     <li><a href="/menu">Menu</a></li>
-                    <li><a href="/" class="header-logo"><img loading="lazy" src="/images/icons/McKayIcon.png" alt="McKayLogo" width="200px"></a> </li>
+                    <li><a href="/" class="header-logo"><img src="/images/icons/McKayIcon.png" alt="McKayLogo" width="200px"></a> </li>
                     <li><a href="/user/login">Usuário</a></li>
                     <li><a href="/cart">Carrinho</a></li>
                     <li><a href="/contact">Contato</a></li>

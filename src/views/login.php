@@ -39,13 +39,13 @@ echo <<< HTML
                 <input value="$email" pattern="^[\w\.]+@[\w]+\.[\w]+$" type="email" 
                        id="email" name="email" maxlength="50" placeholder="Email@exemplo.com" required>
 
-                <span class="validity-symbol" aria-hidden="true"></span>
+                <span class="validity-symbol validity-info" aria-hidden="true"></span>
             </div>
 
             <div class="form-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" name="password" minlength="8" placeholder="************" required>
-                <span class="validity-symbol" aria-hidden="true"></span>
+                <span class="validity-symbol validity-info" aria-hidden="true"></span>
             </div>
 
             <div class="contact-link">

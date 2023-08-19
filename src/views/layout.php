@@ -13,8 +13,8 @@
     <meta name="description" 
           content="This Bakery website is a learning project which presents dynamic page content">
     
-    <!-- <link rel="preload" href="/fonts/KingThings/kingthings_foundation-webfont.woff2" as="font" type="font/woff2"> -->
-    <!-- <link rel="preload" href="/images/icons/McKayIcon.png" as="image" type="image/png"> -->
+    <link rel="preload" href="/fonts/KingThings/kingthings_foundation-webfont.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/images/icons/McKayIcon.png" as="image" type="image/png" crossorigin="anonymous">
 
     <link rel="stylesheet" href="<?= $css ?>">
     <script src="<?= $script ?>" defer type="module"></script>
