@@ -324,7 +324,7 @@ textarea {
     content: "✓";
 }
 
-[data-valid-special='validating'] ~ .validity-info {
+[data-valid-special] ~ .validity-info {
     --validity-color: gold;
 }
 
@@ -345,7 +345,7 @@ textarea {
 
 [data-valid-special='unknown'] + .validity-symbol::after {
     content: "?";
-    animation: jumping 0.8s ease-in-out forwards infinite;
+    animation: jumping 0.8s cubic-bezier(.53,0,.46,1.01) forwards infinite;
 }
 
 .validity-symbol dialog {

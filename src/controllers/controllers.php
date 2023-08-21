@@ -118,8 +118,7 @@ function loginPage()
         return loginSubmit();
     }
 
-    $post = [
-    ];
+    $post = [];
 
     if (isset($_GET['account_created'])) {
         $post['createdAccountMessage'] ='Your Account was created, you can login now';
@@ -245,14 +244,6 @@ function stockEditPage()
     header("location: /admin/stock");
 }
 
-function getImg($name)
-{
-    if (isset($_FILES[$name]) && $_FILES[$name]['error'] == 0) {
-        return getImgLink($_FILES[$name]);
-    }
-    return null;
-}
-
 function stockAddPage()
 {
     if (!isset($_SESSION['admin'])) {
@@ -285,22 +276,4 @@ function stockAddPage()
     header("location: /admin/stock");
 }
 
-function renderLayout($title, $template, $post = [], $assetGroup = 'default')
-{
-    $post['title'] = $title . PAGE_TITLE_SUFFIX;
-    $post['isAdmin'] = isset($_SESSION['admin']);
-    $post['mainTemplate'] = $template;
-    $assets = getAssetsByGroup($assetGroup);
-    $post = array_merge($post, $assets);
-    return renderTemplateHTML("views/layout.php", $post);
-}
-
-function renderTemplateHTML($template, $post = [])
-{
-    extract($post);
-
-    ob_start();
-    require $template;
-
-    return ob_get_clean();
-}
+?>

@@ -7,6 +7,7 @@ const AvailableStatus = {
 }
 
 async function isEmailAvailable(email) {
+    return AvailableStatus.Unknown
     email = email.toLowerCase()
 
     try {

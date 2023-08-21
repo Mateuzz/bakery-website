@@ -4,7 +4,6 @@ require_once "config.php";
 require "manifest.php";
 
 const JS_PATH = "js";
-const TEMPLATES_PATH = "/views";
 const CSS_PATH = "css";
 
 const ASSETS_GROUP = [
