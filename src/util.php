@@ -58,4 +58,32 @@ function getImgLink($img) {
     return null;
 }
 
+function getImg($name)
+{
+    if (isset($_FILES[$name]) && $_FILES[$name]['error'] == 0) {
+        return getImgLink($_FILES[$name]);
+    }
+    return null;
+}
+
+function renderLayout($title, $template, $post = [], $assetGroup = 'default')
+{
+    $post['title'] = $title . PAGE_TITLE_SUFFIX;
+    $post['isAdmin'] = isset($_SESSION['admin']);
+    $post['mainTemplate'] = $template;
+    $assets = getAssetsByGroup($assetGroup);
+    $post = array_merge($post, $assets);
+    return renderTemplateHTML("views/layout.php", $post);
+}
+
+function renderTemplateHTML($template, $post = [])
+{
+    extract($post);
+
+    ob_start();
+    require $template;
+
+    return ob_get_clean();
+}
+
 ?>

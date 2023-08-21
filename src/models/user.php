@@ -27,7 +27,7 @@ const BIRTH_REGEX = ["^([\d]{1,4})-([\d]{1,2})-([\d]{1,2})$"];
 const TELEPHONE_REGEX = ["^([0-9]{2}|\([0-9]{2}\))[\s]*([0-9]{4,5})[\s]*-?[\s]*([0-9]{4})$"];
 
 function stringToRegex($string) {
-    return '/' . $string . '/';
+    return '/' + $string + '/';
 }
 
 function getFieldValidateRules() {

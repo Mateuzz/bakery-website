@@ -7,6 +7,7 @@ const AvailableStatus = {
 }
 
 async function isEmailAvailable(email) {
+    return AvailableStatus.Unknown
     email = email.toLowerCase()
 
     try {
@@ -56,7 +57,6 @@ function basicValidation(field, {fieldName, rule}) {
 
     for (const pattern of Object.values(patterns)) {
         if (!pattern.test(value)) {
-            console.log(pattern)
             return customMsg
         }
     }
@@ -80,13 +80,12 @@ async function fetchValidationRules() {
         return JSON.parse(text, (key, value) => {
             const ps = []
             if (key == 'patterns' || key == 'invalidPatterns') {
-                for (const p of value) {
-                    ps.push(new RegExp(p))
+                for (const p of key) {
+                    ps.push(new RegExp(value))
                 }
             } else {
                 return value
             }
-            console.log(ps)
             return ps
         })
     } catch (e) {
@@ -94,20 +93,6 @@ async function fetchValidationRules() {
     }
 }
 
-function stringRulesToRegex(rules) {
-    for (const rule of Object.values(rules)) {
-        const patterns = rule['patterns']
-        const invalidPatterns = rule['invalidPatterns']
-
-        for (const key in patterns) {
-            patterns[key] = new RegExp(patterns[key])
-        }
-
-        for (const key in invalidPatterns) {
-            invalidPatterns[key] = new RegExp(invalidPatterns[key])
-        }
-    }
-}
 function setValidityMessage(element, msg) {
     const msgElement = element.parentElement.querySelector(validationMessageBox)
 
@@ -161,6 +146,7 @@ function signupPage() {
     const rules = fetchValidationRules()
 
     rules.then(rules => {
+        console.log(rules)
         for (const id in fields) {
             // these have exceptional rules
             if (id == 'email' || id == 'password-confirm')

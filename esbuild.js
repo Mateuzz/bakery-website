@@ -19,22 +19,11 @@ entryPoints = entryPoints.concat(getEntries(cssPath))
 
 external = external.map(path => '*.' + path)
 
-const logPlugin = {
-    name: "log-plugin",
-
-    setup(build) {
-        build.onEnd(result => {
-            console.log(result)
-        })
-    }
-}
-
 esbuild.build({
     entryPoints,
     external,
     outbase: '.',
     absWorkingDir: Path.resolve(workingDir),
-    allowOverwrite: true,
     entryNames: '[dir]/[name]-[hash]',
     bundle: true,
     minify: true,
@@ -44,7 +33,6 @@ esbuild.build({
         phpManifestPlugin({
             pathPHPManifest: Path.join("src/config", "manifest.php")
         }),
-        logPlugin
     ]
 })
 

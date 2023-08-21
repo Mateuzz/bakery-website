@@ -1,7 +1,9 @@
 <?php
 
-ini_set("display_errors", true);
-error_reporting(E_ALL);
+ini_set("display_errors", true); 
+ini_set("include_path", __DIR__ . "/../src");
+
+error_reporting(E_ALL); 
 
 require 'controllers/controllers.php';
 

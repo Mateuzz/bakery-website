@@ -7,13 +7,11 @@ foreach ($categories as $category) {
     $imgUrl = $category['img_url'];
     echo <<< HTML
 
-    <div>
+    <div class="loading-wheel-wrapper">
         <div class="pretty-card pretty-card-image">
             <a href="/menu#$name">$name</a>
         </div>
-        <div class="loading-wheel-wrapper" data-onload="make-bg-widescreen">
-            <img loading="lazy" src="$imgUrl" alt="$name"/> 
-        </div>
+        <img loading="lazy" src="$imgUrl" alt="$name"/> 
     </div>
 
     HTML;
@@ -30,7 +28,7 @@ $homeGalleryItemsHtml = ob_get_clean();
             <h1>Bem Vindo</h1>
             <div class="info-card-content dark-card">
                 <div class="info-card-main">
-                    <div class="info-card-picture loading-wheel-wrapper"> 
+                    <div class="info-card-picture"> 
                         <img loading="lazy" src="images/cookie/gotas.jpg" alt="Biscuits Basquet"/>
                     </div>
                     <div class="info-card-text">
