@@ -95,20 +95,6 @@ async function fetchValidationRules() {
     }
 }
 
-function stringRulesToRegex(rules) {
-    for (const rule of Object.values(rules)) {
-        const patterns = rule['patterns']
-        const invalidPatterns = rule['invalidPatterns']
-
-        for (const key in patterns) {
-            patterns[key] = new RegExp(patterns[key])
-        }
-
-        for (const key in invalidPatterns) {
-            invalidPatterns[key] = new RegExp(invalidPatterns[key])
-        }
-    }
-}
 function setValidityMessage(element, msg) {
     const msgElement = element.parentElement.querySelector(validationMessageBox)
 
