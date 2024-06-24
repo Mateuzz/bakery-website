@@ -7,7 +7,7 @@ const AvailableStatus = {
 }
 
 async function isEmailAvailable(email) {
-    return AvailableStatus.Unknown
+    //return AvailableStatus.Unknown
     email = email.toLowerCase()
 
     try {
@@ -94,7 +94,7 @@ async function fetchValidationRules() {
 }
 
 function setValidityMessage(element, msg) {
-    const msgElement = element.parentElement.querySelector(validationMessageBox)
+    const msgElement = element.parentElement.querySelector(validationMessageSelector)
 
     if (!msg) {
         msgElement.textContent = ''
@@ -247,12 +247,36 @@ function signupPage() {
     })
 }
 
-let validationMessageBox = ''
+function setValidationMessageElementSelector() {
+    let oldSelector = validationMessageSelector
 
-if (document.documentElement.clientWidth > 850) {
-    validationMessageBox = 'dialog'
-} else {
-    validationMessageBox = '.form-validity-message'
+    if (document.documentElement.clientWidth > 850) {
+        validationMessageSelector = 'dialog'
+    } else {
+        validationMessageSelector = '.form-validity-message'
+    }
+    
+    if (oldSelector !== validationMessageSelector) {
+        $all('.form-group').forEach(e => {
+            const dialog = e.querySelector('dialog')
+            const message = e.querySelector('.form-validity-message')
+
+            if (validationMessageSelector === 'dialog') {
+                dialog.textContent = message.textContent
+                message.textContent = ''
+                dialog.open = !!dialog.textContent
+            } else {
+                message.textContent = dialog.textContent
+                dialog.textContent = ''
+                dialog.open = false
+            }
+        })
+    }
 }
+
+let validationMessageSelector = ''
+
+window.addEventListener('resize', setValidationMessageElementSelector)
+setValidationMessageElementSelector()
 
 signupPage()

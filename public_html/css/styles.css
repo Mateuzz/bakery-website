@@ -283,20 +283,18 @@ textarea {
 
 .form-group {
     --validity-color: var(--red-invalid-input);
+    position: relative;
 }
 
 .validity-symbol {
-    position: relative;
-    left: 0.3em;
-    font-size: 1.7em;
-}
-
-.validity-symbol::after {
     position: absolute;
+    right: -0.7em;
+    vertical-align: top;
+    font-size: 1.7em;
     color: var(--validity-color);
 }
 
-*:invalid + .validity-symbol::after {
+:is(input, select):invalid + .validity-symbol::after {
     content: "x";
 }
 
@@ -304,11 +302,16 @@ textarea {
     --validity-color: var(--link-blue-stronger);
 }
 
-*:valid + .validity-symbol::after {
+:is(input, select):valid + .validity-symbol {
+    right: -0.9em;
+    font-size: 1.5em;
+}
+
+:is(input, select):valid + .validity-symbol::after {
     content: "✓";
 }
 
-.form-group:has([data-valid-special='validating']) {
+[data-valid-special] ~ .validity-info {
     --validity-color: gold;
 }
 

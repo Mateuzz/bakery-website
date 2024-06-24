@@ -11,7 +11,7 @@ enum Modes {
     case Production;
 }
 
-$gMode = Modes::Production;
+$gMode = Modes::Development;
 
 define('UPLOADED_IMAGES_FULL_PATH', $_SERVER['DOCUMENT_ROOT'] . '/images/products');
 define('UPLOADED_IMAGES_PATH', '/images/products');

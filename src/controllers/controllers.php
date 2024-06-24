@@ -141,6 +141,7 @@ function userApi()
     }
 
     if (isset($_GET['get-validation-rules'])) {
+        header("content-type: application/json");
         return json_encode(getFieldValidateRules());
     }
 
